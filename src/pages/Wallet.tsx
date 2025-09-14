@@ -12,9 +12,9 @@ export default function Wallet() {
 
   // Mock wallet data
   const walletData = {
-    balance: 48.75,
-    pendingRefund: 3.50,
-    totalSaved: 125.20
+    balance: 387.50,
+    pendingRefund: 28.00,
+    totalSaved: 996.00
   }
 
   const recentTransactions = [
@@ -22,7 +22,7 @@ export default function Wallet() {
       id: 'TXN001',
       type: 'debit',
       description: 'Day Pass - All Routes',
-      amount: 12.00,
+      amount: 95.00,
       date: '2024-12-14 09:30',
       status: 'completed'
     },
@@ -30,15 +30,15 @@ export default function Wallet() {
       id: 'TXN002',
       type: 'credit',
       description: 'Wallet Recharge',
-      amount: 50.00,
+      amount: 500.00,
       date: '2024-12-13 18:45',
       status: 'completed'
     },
     {
       id: 'TXN003',
       type: 'debit',
-      description: 'Single Journey - Route 42A',
-      amount: 3.50,
+      description: 'Single Journey - Route V1',
+      amount: 28.00,
       date: '2024-12-13 14:20',
       status: 'completed'
     },
@@ -46,18 +46,18 @@ export default function Wallet() {
       id: 'TXN004',
       type: 'credit',
       description: 'Refund - Cancelled Journey',
-      amount: 2.25,
+      amount: 18.00,
       date: '2024-12-12 16:10',
       status: 'pending'
     }
   ]
 
-  const quickAmounts = [10, 25, 50, 100]
+  const quickAmounts = [100, 200, 500, 1000]
 
   const offers = [
     {
       title: '10% Cashback',
-      description: 'On first recharge of $50+',
+      description: 'On first recharge of ₹500+',
       code: 'FIRST10',
       color: 'success'
     },
@@ -104,17 +104,17 @@ export default function Wallet() {
               </Button>
             </div>
             <div>
-              <h2 className="text-3xl font-bold">${walletData.balance.toFixed(2)}</h2>
+              <h2 className="text-3xl font-bold">₹{walletData.balance.toFixed(2)}</h2>
               <p className="text-sm opacity-90">Available Balance</p>
             </div>
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div>
                 <p className="text-sm opacity-75">Pending Refund</p>
-                <p className="font-semibold">${walletData.pendingRefund.toFixed(2)}</p>
+                <p className="font-semibold">₹{walletData.pendingRefund.toFixed(2)}</p>
               </div>
               <div>
                 <p className="text-sm opacity-75">Total Saved</p>
-                <p className="font-semibold">${walletData.totalSaved.toFixed(2)}</p>
+                <p className="font-semibold">₹{walletData.totalSaved.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function Wallet() {
                       onClick={() => setRechargeAmount(amount.toString())}
                       className="text-xs"
                     >
-                      ${amount}
+                      ₹{amount}
                     </Button>
                   ))}
                 </div>
@@ -220,7 +220,7 @@ export default function Wallet() {
                     </div>
                     <div className="text-right">
                       <p className={`font-semibold text-sm ${colorClass}`}>
-                        {transaction.type === 'credit' ? '+' : '-'}${transaction.amount.toFixed(2)}
+                        {transaction.type === 'credit' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
                       </p>
                       <Badge 
                         variant={transaction.status === 'completed' ? 'secondary' : 'destructive'}

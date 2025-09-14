@@ -14,9 +14,9 @@ export default function Tickets() {
     {
       id: 'TKT001',
       type: 'Single Journey',
-      route: '42A - City Center to Airport',
+      route: 'V1 - Whitefield to Electronic City',
       validUntil: '2024-12-14 18:30',
-      price: '$3.50',
+      price: '₹28.00',
       status: 'Active',
       qrCode: 'QR12345ABC'
     },
@@ -25,7 +25,7 @@ export default function Tickets() {
       type: 'Day Pass',
       route: 'All Routes',
       validUntil: '2024-12-14 23:59',
-      price: '$12.00',
+      price: '₹95.00',
       status: 'Active',
       qrCode: 'QR67890DEF'
     }
@@ -35,9 +35,9 @@ export default function Tickets() {
     {
       id: 'TKT003',
       type: 'Single Journey',
-      route: '15B - Mall to University',
+      route: 'AS4 - Koramangala to Majestic',
       usedAt: '2024-12-13 14:25',
-      price: '$2.25',
+      price: '₹18.00',
       status: 'Used'
     },
     {
@@ -45,7 +45,7 @@ export default function Tickets() {
       type: 'Weekly Pass',
       route: 'All Routes',
       expiredAt: '2024-12-10 23:59',
-      price: '$45.00',
+      price: '₹350.00',
       status: 'Expired'
     }
   ]
@@ -54,21 +54,21 @@ export default function Tickets() {
     {
       name: 'Single Journey',
       description: 'One-time bus ride',
-      price: 'From $2.00',
+      price: 'From ₹15.00',
       icon: Ticket,
       color: 'primary'
     },
     {
       name: 'Day Pass',
       description: 'Unlimited rides for 24 hours',
-      price: '$12.00',
+      price: '₹95.00',
       icon: Clock,
       color: 'bus-route'
     },
     {
       name: 'Weekly Pass',
       description: 'Unlimited rides for 7 days',
-      price: '$45.00',
+      price: '₹350.00',
       icon: Calendar,
       color: 'bus-stop'
     }

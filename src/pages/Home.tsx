@@ -1,40 +1,115 @@
 import { useState } from 'react'
-import { Search, MapPin, Navigation, Clock, Bell } from 'lucide-react'
+import { Search, MapPin, Navigation, Clock, Bell, ChevronDown } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import busHeroImage from '@/assets/bus-hero.jpg'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCity, setSelectedCity] = useState('Bangalore')
 
-  // Mock data for nearby buses and stops
-  const nearbyBuses = [
-    { id: '42A', route: 'City Center - Airport', eta: '3 min', stops: 2, color: 'bus-route' },
-    { id: '15B', route: 'Mall - University', eta: '7 min', stops: 4, color: 'bus-live' },
-    { id: '28C', route: 'Station - Hospital', eta: '12 min', stops: 6, color: 'bus-stop' },
-  ]
+  const cities = ['Bangalore', 'Punjab', 'Raipur', 'Mumbai', 'Delhi']
 
-  const nearbyStops = [
-    { name: 'Main Street', distance: '50m', buses: ['42A', '15B'] },
-    { name: 'Central Plaza', distance: '200m', buses: ['28C', '9D'] },
-    { name: 'Shopping Center', distance: '350m', buses: ['42A'] },
-  ]
+  // Mock data for nearby buses and stops based on selected city
+  const getCityData = (city: string) => {
+    const cityData: { [key: string]: { buses: any[], stops: any[] } } = {
+      'Bangalore': {
+        buses: [
+          { id: 'V1', route: 'Whitefield - Electronic City', eta: '3 min', stops: 2 },
+          { id: 'AS4', route: 'Koramangala - Majestic', eta: '7 min', stops: 4 },
+          { id: 'G4', route: 'Yeshwanthpur - Silk Board', eta: '12 min', stops: 6 },
+        ],
+        stops: [
+          { name: 'Brigade Road', distance: '50m', buses: ['V1', 'AS4'] },
+          { name: 'MG Road Metro', distance: '200m', buses: ['G4', 'MF1'] },
+          { name: 'Forum Mall', distance: '350m', buses: ['V1'] },
+        ]
+      },
+      'Mumbai': {
+        buses: [
+          { id: '25', route: 'Bandra - Colaba', eta: '5 min', stops: 3 },
+          { id: 'A1', route: 'Andheri - CST', eta: '8 min', stops: 5 },
+          { id: 'C210', route: 'Powai - Churchgate', eta: '15 min', stops: 8 },
+        ],
+        stops: [
+          { name: 'Linking Road', distance: '80m', buses: ['25', 'A1'] },
+          { name: 'Bandra Station', distance: '150m', buses: ['C210', '25'] },
+          { name: 'Infinity Mall', distance: '300m', buses: ['A1'] },
+        ]
+      },
+      'Delhi': {
+        buses: [
+          { id: '764', route: 'CP - Gurgaon', eta: '4 min', stops: 2 },
+          { id: '543', route: 'ISBT - Airport', eta: '9 min', stops: 6 },
+          { id: '615', route: 'Karol Bagh - Noida', eta: '11 min', stops: 4 },
+        ],
+        stops: [
+          { name: 'Connaught Place', distance: '60m', buses: ['764', '543'] },
+          { name: 'Rajiv Chowk Metro', distance: '180m', buses: ['615', '764'] },
+          { name: 'Palika Bazaar', distance: '320m', buses: ['543'] },
+        ]
+      },
+      'Punjab': {
+        buses: [
+          { id: 'PB12', route: 'Chandigarh - Ludhiana', eta: '6 min', stops: 3 },
+          { id: 'PB8', route: 'Amritsar - Jalandhar', eta: '10 min', stops: 5 },
+          { id: 'PB15', route: 'Patiala - Bathinda', eta: '14 min', stops: 7 },
+        ],
+        stops: [
+          { name: 'Sector 17', distance: '90m', buses: ['PB12', 'PB8'] },
+          { name: 'Bus Stand', distance: '220m', buses: ['PB15', 'PB12'] },
+          { name: 'Civil Hospital', distance: '400m', buses: ['PB8'] },
+        ]
+      },
+      'Raipur': {
+        buses: [
+          { id: 'RP1', route: 'Telibandha - Pandri', eta: '5 min', stops: 2 },
+          { id: 'RP7', route: 'Shankar Nagar - Mowa', eta: '8 min', stops: 4 },
+          { id: 'RP3', route: 'Devendra Nagar - Durg', eta: '13 min', stops: 6 },
+        ],
+        stops: [
+          { name: 'Pandri Station', distance: '70m', buses: ['RP1', 'RP7'] },
+          { name: 'City Center Mall', distance: '160m', buses: ['RP3', 'RP1'] },
+          { name: 'Marine Drive', distance: '280m', buses: ['RP7'] },
+        ]
+      }
+    }
+    return cityData[city] || cityData['Bangalore']
+  }
+
+  const { buses: nearbyBuses, stops: nearbyStops } = getCityData(selectedCity)
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with Hero Image */}
-      <div className="relative h-48 bg-gradient-card overflow-hidden">
-        <img 
-          src={busHeroImage} 
-          alt="Modern city buses" 
-          className="w-full h-full object-cover opacity-90"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-        <div className="absolute bottom-4 left-4 right-4">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Good Morning!</h1>
-          <p className="text-muted-foreground">Find your bus, track in real-time</p>
+      {/* Header with App Name and City Selector */}
+      <div className="bg-gradient-card px-4 py-6 border-b">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-primary">NavGati</h1>
+            <p className="text-sm text-muted-foreground">Find your bus, track in real-time</p>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="text-sm">
+                <MapPin className="h-4 w-4 mr-2" />
+                {selectedCity}
+                <ChevronDown className="h-4 w-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              {cities.map((city) => (
+                <DropdownMenuItem
+                  key={city}
+                  onClick={() => setSelectedCity(city)}
+                  className={selectedCity === city ? 'bg-primary/10' : ''}
+                >
+                  {city}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
