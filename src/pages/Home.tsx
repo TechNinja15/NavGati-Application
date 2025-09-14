@@ -5,12 +5,11 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useCity } from '@/contexts/CityContext'
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCity, setSelectedCity] = useState('Bangalore')
-
-  const cities = ['Bangalore', 'Punjab', 'Raipur', 'Mumbai', 'Delhi']
+  const { selectedCity, setSelectedCity, cities } = useCity()
 
   // Mock data for nearby buses and stops based on selected city
   const getCityData = (city: string) => {

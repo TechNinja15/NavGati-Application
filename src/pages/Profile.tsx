@@ -6,9 +6,11 @@ import { Switch } from '@/components/ui/switch'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { useTheme } from '@/components/ThemeProvider'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function Profile() {
   const { theme, setTheme } = useTheme()
+  const { user, logout } = useAuth()
   const [notifications, setNotifications] = useState({
     busArrivals: true,
     delays: true,
@@ -16,11 +18,11 @@ export default function Profile() {
     weeklyReports: true
   })
 
-  // Mock user data
+  // Mock user data with auth context fallback
   const userData = {
-    name: 'John Doe',
-    email: 'john.doe@email.com',
-    phone: '+1 (555) 123-4567',
+    name: user?.name || 'John Doe',
+    email: user?.email || 'john.doe@email.com',
+    phone: '+91 (555) 123-4567',
     memberSince: 'March 2024',
     totalTrips: 156,
     carbonSaved: '45.2 kg',
@@ -220,7 +222,11 @@ export default function Profile() {
 
         {/* Logout Button */}
         <Card className="p-4 shadow-card bg-gradient-card border-destructive/20">
-          <Button variant="ghost" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10">
+          <Button 
+            variant="ghost" 
+            className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={logout}
+          >
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out
           </Button>

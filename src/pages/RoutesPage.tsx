@@ -5,58 +5,51 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useCity } from '@/contexts/CityContext'
 
 export default function RoutesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState('all')
+  const { selectedCity } = useCity()
 
-  // Mock route data
-  const routes = [
-    {
-      id: '42A',
-      name: 'City Center - Airport Express',
-      type: 'Express',
-      duration: '45 min',
-      stops: 12,
-      frequency: '10 min',
-      fare: '$3.50',
-      isFavorite: true,
-      status: 'On Time'
-    },
-    {
-      id: '15B',
-      name: 'Mall - University Circular',
-      type: 'Regular',
-      duration: '35 min',
-      stops: 18,
-      frequency: '15 min',
-      fare: '$2.25',
-      isFavorite: false,
-      status: 'Delayed 5 min'
-    },
-    {
-      id: '28C',
-      name: 'Station - Hospital',
-      type: 'Regular',
-      duration: '25 min',
-      stops: 14,
-      frequency: '12 min',
-      fare: '$2.00',
-      isFavorite: true,
-      status: 'On Time'
-    },
-    {
-      id: '9D',
-      name: 'Downtown - Suburbs',
-      type: 'Express',
-      duration: '55 min',
-      stops: 8,
-      frequency: '20 min',
-      fare: '$4.00',
-      isFavorite: false,
-      status: 'Running Early'
+  // Mock route data based on selected city
+  const getCityRoutes = (city: string) => {
+    const cityRoutes: { [key: string]: any[] } = {
+      'Bangalore': [
+        { id: 'V1', name: 'Whitefield - Electronic City', type: 'Express', duration: '45 min', stops: 12, frequency: '10 min', fare: '₹35', isFavorite: true, status: 'On Time' },
+        { id: 'AS4', name: 'Koramangala - Majestic', type: 'Regular', duration: '35 min', stops: 18, frequency: '15 min', fare: '₹25', isFavorite: false, status: 'Delayed 5 min' },
+        { id: 'G4', name: 'Yeshwanthpur - Silk Board', type: 'Regular', duration: '25 min', stops: 14, frequency: '12 min', fare: '₹20', isFavorite: true, status: 'On Time' },
+        { id: 'MF1', name: 'Brigade Road - Airport', type: 'Express', duration: '55 min', stops: 8, frequency: '20 min', fare: '₹40', isFavorite: false, status: 'Running Early' }
+      ],
+      'Mumbai': [
+        { id: '25', name: 'Bandra - Colaba', type: 'Express', duration: '40 min', stops: 10, frequency: '8 min', fare: '₹30', isFavorite: true, status: 'On Time' },
+        { id: 'A1', name: 'Andheri - CST', type: 'Regular', duration: '50 min', stops: 20, frequency: '12 min', fare: '₹28', isFavorite: false, status: 'Delayed 3 min' },
+        { id: 'C210', name: 'Powai - Churchgate', type: 'Express', duration: '45 min', stops: 12, frequency: '15 min', fare: '₹35', isFavorite: true, status: 'On Time' },
+        { id: '315', name: 'Borivali - VT', type: 'Regular', duration: '60 min', stops: 25, frequency: '10 min', fare: '₹32', isFavorite: false, status: 'Running Early' }
+      ],
+      'Delhi': [
+        { id: '764', name: 'CP - Gurgaon', type: 'Express', duration: '50 min', stops: 8, frequency: '12 min', fare: '₹45', isFavorite: true, status: 'On Time' },
+        { id: '543', name: 'ISBT - Airport', type: 'Express', duration: '40 min', stops: 6, frequency: '15 min', fare: '₹50', isFavorite: false, status: 'Delayed 8 min' },
+        { id: '615', name: 'Karol Bagh - Noida', type: 'Regular', duration: '55 min', stops: 18, frequency: '10 min', fare: '₹35', isFavorite: true, status: 'On Time' },
+        { id: '729', name: 'Chandni Chowk - Dwarka', type: 'Express', duration: '65 min', stops: 12, frequency: '20 min', fare: '₹40', isFavorite: false, status: 'Running Early' }
+      ],
+      'Punjab': [
+        { id: 'PB12', name: 'Chandigarh - Ludhiana', type: 'Express', duration: '90 min', stops: 15, frequency: '30 min', fare: '₹80', isFavorite: true, status: 'On Time' },
+        { id: 'PB8', name: 'Amritsar - Jalandhar', type: 'Regular', duration: '75 min', stops: 22, frequency: '25 min', fare: '₹65', isFavorite: false, status: 'Delayed 10 min' },
+        { id: 'PB15', name: 'Patiala - Bathinda', type: 'Regular', duration: '85 min', stops: 20, frequency: '35 min', fare: '₹70', isFavorite: true, status: 'On Time' },
+        { id: 'PB3', name: 'Mohali - Rupnagar', type: 'Express', duration: '60 min', stops: 12, frequency: '40 min', fare: '₹55', isFavorite: false, status: 'Running Early' }
+      ],
+      'Raipur': [
+        { id: 'RP1', name: 'Telibandha - Pandri', type: 'Regular', duration: '25 min', stops: 12, frequency: '12 min', fare: '₹15', isFavorite: true, status: 'On Time' },
+        { id: 'RP7', name: 'Shankar Nagar - Mowa', type: 'Regular', duration: '30 min', stops: 15, frequency: '15 min', fare: '₹18', isFavorite: false, status: 'Delayed 5 min' },
+        { id: 'RP3', name: 'Devendra Nagar - Durg', type: 'Express', duration: '45 min', stops: 8, frequency: '20 min', fare: '₹25', isFavorite: true, status: 'On Time' },
+        { id: 'RP5', name: 'Station Road - Tatibandh', type: 'Regular', duration: '35 min', stops: 18, frequency: '18 min', fare: '₹20', isFavorite: false, status: 'Running Early' }
+      ]
     }
-  ]
+    return cityRoutes[city] || cityRoutes['Bangalore']
+  }
+
+  const routes = getCityRoutes(selectedCity)
 
   const filteredRoutes = routes.filter(route => {
     const matchesSearch = route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
