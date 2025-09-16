@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import { Bus, MapPin, Clock, Users, Camera, Map, Play, Square, ChevronRight } from 'lucide-react'
+import { Bus, MapPin, Clock, Users, Camera, Map, Play, Square, ChevronRight, User } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -110,16 +111,24 @@ export default function DriverDashboard() {
   return (
     <div className="min-h-screen bg-background p-3 sm:p-4">
       <div className="max-w-md mx-auto space-y-4 sm:space-y-6">
-          {/* Header */}
-          <Card className="p-4 sm:p-6 shadow-card bg-gradient-card">
-            <div className="flex items-center space-x-3">
-              <Bus className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-primary">Driver Dashboard</h1>
-                <p className="text-sm sm:text-base text-muted-foreground">Set up your bus details</p>
-              </div>
+      {/* Header */}
+      <Card className="p-4 sm:p-6 shadow-card bg-gradient-card">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Bus className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-primary">Driver Dashboard</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">Set up your bus details</p>
             </div>
-          </Card>
+          </div>
+          <Link to="/profile">
+            <Button variant="outline" size="sm">
+              <User className="w-4 h-4 mr-2" />
+              <span className="text-sm">Profile</span>
+            </Button>
+          </Link>
+        </div>
+      </Card>
 
           {/* Bus Setup Form */}
           <Card className="p-4 sm:p-6 shadow-card">
@@ -183,10 +192,18 @@ export default function DriverDashboard() {
               <p className="text-xs sm:text-sm text-muted-foreground">{routeNumber}</p>
             </div>
           </div>
-          <Button onClick={handleStopJourney} variant="destructive" size="sm">
-            <Square className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-            <span className="text-xs sm:text-sm">End</span>
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Link to="/profile">
+              <Button variant="outline" size="sm">
+                <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="text-xs sm:text-sm">Profile</span>
+              </Button>
+            </Link>
+            <Button onClick={handleStopJourney} variant="destructive" size="sm">
+              <Square className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="text-xs sm:text-sm">End</span>
+            </Button>
+          </div>
         </div>
       </Card>
 
