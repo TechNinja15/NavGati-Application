@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import DriverDashboard from "./pages/DriverDashboard";
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import BookTicket from "./pages/BookTicket";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,14 +58,15 @@ function AppContent() {
   return (
     <CityProvider>
       <div className="min-h-screen bg-background pb-20">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/routes" element={<RoutesPage />} />
-          <Route path="/tickets" element={<Tickets />} />
-          <Route path="/wallet" element={<Wallet />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/routes" element={<RoutesPage />} />
+        <Route path="/tickets" element={<Tickets />} />
+        <Route path="/wallet" element={<Wallet />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/book-ticket" element={<BookTicket />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
         <BottomNavigation />
       </div>
     </CityProvider>

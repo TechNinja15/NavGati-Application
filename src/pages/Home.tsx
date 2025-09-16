@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useCity } from '@/contexts/CityContext'
+import ChatBot from '@/components/ChatBot'
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -220,6 +221,9 @@ export default function Home() {
           </div>
         </Card>
       </div>
+      
+      {/* ChatBot */}
+      <ChatBot />
     </div>
   )
 }

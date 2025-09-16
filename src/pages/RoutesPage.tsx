@@ -1,16 +1,23 @@
 import { useState } from 'react'
-import { Search, MapPin, Clock, Navigation, Star } from 'lucide-react'
+import { Search, MapPin, Clock, Navigation, Star, Ticket } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCity } from '@/contexts/CityContext'
+import { useNavigate } from 'react-router-dom'
+import RouteProgress from '@/components/RouteProgress'
+import MapView from '@/components/MapView'
 
 export default function RoutesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState('all')
+  const [showRouteProgress, setShowRouteProgress] = useState(false)
+  const [showMapView, setShowMapView] = useState(false)
+  const [selectedRoute, setSelectedRoute] = useState<any>(null)
   const { selectedCity } = useCity()
+  const navigate = useNavigate()
 
   // Mock route data based on selected city
   const getCityRoutes = (city: string) => {
@@ -64,6 +71,51 @@ export default function RoutesPage() {
     if (status.includes('Delayed')) return 'text-destructive'
     if (status.includes('Early')) return 'text-warning'
     return 'text-success'
+  }
+
+  const handleTrackLive = (route: any) => {
+    setSelectedRoute(route)
+    setShowRouteProgress(true)
+  }
+
+  const handleBookTicket = () => {
+    navigate('/book-ticket')
+  }
+
+  const handleViewMap = () => {
+    setShowMapView(true)
+    setShowRouteProgress(false)
+  }
+
+  const handleBackFromProgress = () => {
+    setShowRouteProgress(false)
+    setSelectedRoute(null)
+  }
+
+  const handleBackFromMap = () => {
+    setShowMapView(false)
+    setShowRouteProgress(true)
+  }
+
+  if (showMapView && selectedRoute) {
+    return (
+      <MapView
+        routeId={selectedRoute.id}
+        routeName={selectedRoute.name}
+        onBack={handleBackFromMap}
+      />
+    )
+  }
+
+  if (showRouteProgress && selectedRoute) {
+    return (
+      <RouteProgress
+        routeId={selectedRoute.id}
+        routeName={selectedRoute.name}
+        onBack={handleBackFromProgress}
+        onViewMap={handleViewMap}
+      />
+    )
   }
 
   return (
@@ -144,12 +196,13 @@ export default function RoutesPage() {
 
                   {/* Action Buttons */}
                   <div className="flex space-x-2 pt-2">
-                    <Button size="sm" className="flex-1">
+                    <Button size="sm" className="flex-1" onClick={() => handleTrackLive(route)}>
                       <Navigation className="h-4 w-4 mr-2" />
                       Track Live
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
-                      View Stops
+                    <Button size="sm" variant="outline" className="flex-1" onClick={handleBookTicket}>
+                      <Ticket className="h-4 w-4 mr-2" />
+                      Book Ticket
                     </Button>
                   </div>
                 </div>
