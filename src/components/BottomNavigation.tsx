@@ -1,17 +1,20 @@
 import { MapPin, Route, Ticket, Wallet, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-
-const navigation = [
-  { name: 'Home', href: '/', icon: MapPin },
-  { name: 'Routes', href: '/routes', icon: Route },
-  { name: 'Tickets', href: '/tickets', icon: Ticket },
-  { name: 'Wallet', href: '/wallet', icon: Wallet },
-  { name: 'Profile', href: '/profile', icon: User },
-]
+import { useLanguage } from '@/contexts/LanguageContext'
+import { getTranslation } from '@/lib/translations'
 
 export function BottomNavigation() {
   const location = useLocation()
+  const { language } = useLanguage()
+  
+  const navigation = [
+    { name: getTranslation(language, 'home'), href: '/', icon: MapPin },
+    { name: getTranslation(language, 'routes'), href: '/routes', icon: Route },
+    { name: getTranslation(language, 'tickets'), href: '/tickets', icon: Ticket },
+    { name: getTranslation(language, 'wallet'), href: '/wallet', icon: Wallet },
+    { name: getTranslation(language, 'profile'), href: '/profile', icon: User },
+  ]
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border">
