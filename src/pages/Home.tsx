@@ -114,17 +114,20 @@ export default function Home() {
       </div>
 
       <div className="px-4 py-6 space-y-6">
-        {/* Search Bar */}
+        {/* Search Bar with ChatBot */}
         <Card className="p-4 shadow-card">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Search routes, stops, or bus numbers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background border-0 shadow-none focus-visible:ring-1"
-            />
+          <div className="flex space-x-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                type="text"
+                placeholder="Search routes, stops, or bus numbers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-background border-0 shadow-none focus-visible:ring-1"
+              />
+            </div>
+            <ChatBot />
           </div>
         </Card>
 
@@ -221,9 +224,6 @@ export default function Home() {
           </div>
         </Card>
       </div>
-      
-      {/* ChatBot */}
-      <ChatBot />
     </div>
   )
 }

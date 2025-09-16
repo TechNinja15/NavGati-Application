@@ -8,6 +8,8 @@ interface RouteStop {
   name: string
   status: 'departed' | 'current' | 'upcoming'
   eta?: string
+  traffic?: 'Light' | 'Moderate' | 'Heavy'
+  arrivalTime?: string
 }
 
 interface RouteProgressProps {
@@ -19,12 +21,12 @@ interface RouteProgressProps {
 
 export default function RouteProgress({ routeId, routeName, onBack, onViewMap }: RouteProgressProps) {
   const [stops] = useState<RouteStop[]>([
-    { name: 'Raipur Railway Station', status: 'departed' },
-    { name: 'Fafadih', status: 'current' },
-    { name: 'Gudhiyari', status: 'upcoming', eta: '11:30' },
-    { name: 'Kota', status: 'upcoming', eta: '11:45' },
-    { name: 'GE Road', status: 'upcoming', eta: '12:00' },
-    { name: 'Devendra Nagar', status: 'upcoming', eta: '12:15' }
+    { name: 'Raipur Railway Station', status: 'departed', arrivalTime: '10:45', traffic: 'Light' },
+    { name: 'Fafadih', status: 'current', arrivalTime: '11:15', traffic: 'Moderate' },
+    { name: 'Gudhiyari', status: 'upcoming', eta: '11:30', arrivalTime: '11:30', traffic: 'Heavy' },
+    { name: 'Kota', status: 'upcoming', eta: '11:45', arrivalTime: '11:47', traffic: 'Moderate' },
+    { name: 'GE Road', status: 'upcoming', eta: '12:00', arrivalTime: '12:03', traffic: 'Heavy' },
+    { name: 'Devendra Nagar', status: 'upcoming', eta: '12:15', arrivalTime: '12:20', traffic: 'Light' }
   ])
 
   return (
@@ -86,22 +88,40 @@ export default function RouteProgress({ routeId, routeName, onBack, onViewMap }:
 
               {/* Stop Details */}
               <div className="flex-1 flex items-center justify-between">
-                <div>
-                  <h3
-                    className={`font-semibold ${
-                      stop.status === 'current' ? 'text-primary' : ''
-                    }`}
-                  >
-                    {stop.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {stop.status === 'departed' && 'Departed'}
-                    {stop.status === 'current' && 'Current Location'}
-                    {stop.status === 'upcoming' && stop.eta && `ETA: ${stop.eta}`}
-                  </p>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3
+                      className={`font-semibold ${
+                        stop.status === 'current' ? 'text-primary' : ''
+                      }`}
+                    >
+                      {stop.name}
+                    </h3>
+                    {stop.arrivalTime && (
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {stop.arrivalTime}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-sm text-muted-foreground">
+                      {stop.status === 'departed' && 'Departed'}
+                      {stop.status === 'current' && 'Current Location'}
+                      {stop.status === 'upcoming' && stop.eta && `ETA: ${stop.eta}`}
+                    </p>
+                    {stop.traffic && (
+                      <div className="flex items-center space-x-1">
+                        <div className={`w-2 h-2 rounded-full ${
+                          stop.traffic === 'Light' ? 'bg-success' : 
+                          stop.traffic === 'Moderate' ? 'bg-warning' : 'bg-destructive'
+                        }`} />
+                        <span className="text-xs text-muted-foreground">{stop.traffic}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 {stop.status === 'current' && (
-                  <Badge variant="secondary" className="bg-primary/10 text-primary">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary ml-2">
                     Bus Here
                   </Badge>
                 )}

@@ -10,6 +10,13 @@ interface MapViewProps {
 }
 
 export default function MapView({ routeId, routeName, onBack }: MapViewProps) {
+  const handleOpenGoogleMaps = () => {
+    // Create Google Maps URL with route information
+    const encodedRoute = encodeURIComponent(routeName)
+    const googleMapsUrl = `https://www.google.com/maps/search/${encodedRoute}+bus+route`
+    window.open(googleMapsUrl, '_blank')
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -27,13 +34,17 @@ export default function MapView({ routeId, routeName, onBack }: MapViewProps) {
 
       <div className="relative h-[calc(100vh-120px)]">
         {/* Map Placeholder */}
-        <div className="absolute inset-0 bg-muted flex items-center justify-center">
+        <div className="absolute inset-0 bg-muted flex items-center justify-center cursor-pointer" onClick={handleOpenGoogleMaps}>
           <div className="text-center">
             <Navigation className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">Interactive map would be displayed here</p>
+            <p className="text-muted-foreground font-medium">Tap to view in Google Maps</p>
             <p className="text-sm text-muted-foreground mt-2">
-              Showing route {routeId} with real-time bus location
+              Route {routeId}: {routeName}
             </p>
+            <Button className="mt-4" onClick={handleOpenGoogleMaps}>
+              <Navigation className="h-4 w-4 mr-2" />
+              Open in Google Maps
+            </Button>
           </div>
         </div>
 

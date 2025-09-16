@@ -19,38 +19,38 @@ export default function RoutesPage() {
   const { selectedCity } = useCity()
   const navigate = useNavigate()
 
-  // Mock route data based on selected city
+  // Real route data based on selected city
   const getCityRoutes = (city: string) => {
     const cityRoutes: { [key: string]: any[] } = {
       'Bangalore': [
-        { id: 'V1', name: 'Whitefield - Electronic City', type: 'Express', duration: '45 min', stops: 12, frequency: '10 min', fare: '₹35', isFavorite: true, status: 'On Time' },
-        { id: 'AS4', name: 'Koramangala - Majestic', type: 'Regular', duration: '35 min', stops: 18, frequency: '15 min', fare: '₹25', isFavorite: false, status: 'Delayed 5 min' },
-        { id: 'G4', name: 'Yeshwanthpur - Silk Board', type: 'Regular', duration: '25 min', stops: 14, frequency: '12 min', fare: '₹20', isFavorite: true, status: 'On Time' },
-        { id: 'MF1', name: 'Brigade Road - Airport', type: 'Express', duration: '55 min', stops: 8, frequency: '20 min', fare: '₹40', isFavorite: false, status: 'Running Early' }
+        { id: '305D', name: 'Whitefield - Electronic City', type: 'Express', duration: '45 min', stops: 12, frequency: '10 min', fare: '₹35', isFavorite: true, status: 'On Time', traffic: 'Light' },
+        { id: 'KIA-15', name: 'Koramangala - Kempegowda Airport', type: 'Express', duration: '65 min', stops: 8, frequency: '20 min', fare: '₹50', isFavorite: false, status: 'Delayed 5 min', traffic: 'Heavy' },
+        { id: '500D', name: 'Yeshwanthpur - Silk Board', type: 'Regular', duration: '40 min', stops: 18, frequency: '12 min', fare: '₹25', isFavorite: true, status: 'On Time', traffic: 'Moderate' },
+        { id: 'MF-1', name: 'Brigade Road - Marathahalli', type: 'Regular', duration: '35 min', stops: 14, frequency: '15 min', fare: '₹20', isFavorite: false, status: 'Running Early', traffic: 'Light' }
       ],
       'Mumbai': [
-        { id: '25', name: 'Bandra - Colaba', type: 'Express', duration: '40 min', stops: 10, frequency: '8 min', fare: '₹30', isFavorite: true, status: 'On Time' },
-        { id: 'A1', name: 'Andheri - CST', type: 'Regular', duration: '50 min', stops: 20, frequency: '12 min', fare: '₹28', isFavorite: false, status: 'Delayed 3 min' },
-        { id: 'C210', name: 'Powai - Churchgate', type: 'Express', duration: '45 min', stops: 12, frequency: '15 min', fare: '₹35', isFavorite: true, status: 'On Time' },
-        { id: '315', name: 'Borivali - VT', type: 'Regular', duration: '60 min', stops: 25, frequency: '10 min', fare: '₹32', isFavorite: false, status: 'Running Early' }
+        { id: '51', name: 'Colaba - Santacruz Depot', type: 'Regular', duration: '55 min', stops: 25, frequency: '8 min', fare: '₹30', isFavorite: true, status: 'On Time', traffic: 'Heavy' },
+        { id: '496LTD', name: 'Andheri - Marathon Chowk', type: 'Limited', duration: '40 min', stops: 12, frequency: '12 min', fare: '₹35', isFavorite: false, status: 'Delayed 3 min', traffic: 'Moderate' },
+        { id: '39', name: 'Kurne Chowk - SEEPZ', type: 'Regular', duration: '45 min', stops: 18, frequency: '15 min', fare: '₹28', isFavorite: true, status: 'On Time', traffic: 'Light' },
+        { id: 'AS-4', name: 'Bandra - Churchgate', type: 'Express', duration: '35 min', stops: 10, frequency: '10 min', fare: '₹32', isFavorite: false, status: 'Running Early', traffic: 'Moderate' }
       ],
       'Delhi': [
-        { id: '764', name: 'CP - Gurgaon', type: 'Express', duration: '50 min', stops: 8, frequency: '12 min', fare: '₹45', isFavorite: true, status: 'On Time' },
-        { id: '543', name: 'ISBT - Airport', type: 'Express', duration: '40 min', stops: 6, frequency: '15 min', fare: '₹50', isFavorite: false, status: 'Delayed 8 min' },
-        { id: '615', name: 'Karol Bagh - Noida', type: 'Regular', duration: '55 min', stops: 18, frequency: '10 min', fare: '₹35', isFavorite: true, status: 'On Time' },
-        { id: '729', name: 'Chandni Chowk - Dwarka', type: 'Express', duration: '65 min', stops: 12, frequency: '20 min', fare: '₹40', isFavorite: false, status: 'Running Early' }
+        { id: '405', name: 'Mori Gate - Badarpur Border', type: 'Regular', duration: '75 min', stops: 22, frequency: '12 min', fare: '₹25', isFavorite: true, status: 'On Time', traffic: 'Heavy' },
+        { id: 'NCR', name: 'ISBT Kashmere Gate - Gurgaon', type: 'Express', duration: '60 min', stops: 8, frequency: '20 min', fare: '₹50', isFavorite: false, status: 'Delayed 8 min', traffic: 'Heavy' },
+        { id: '411', name: 'ISBT - Ambedkar Nagar', type: 'Regular', duration: '50 min', stops: 18, frequency: '15 min', fare: '₹20', isFavorite: true, status: 'On Time', traffic: 'Moderate' },
+        { id: '160', name: 'Karol Bagh - Gurgaon Stand', type: 'Express', duration: '45 min', stops: 12, frequency: '18 min', fare: '₹40', isFavorite: false, status: 'Running Early', traffic: 'Light' }
       ],
       'Punjab': [
-        { id: 'PB12', name: 'Chandigarh - Ludhiana', type: 'Express', duration: '90 min', stops: 15, frequency: '30 min', fare: '₹80', isFavorite: true, status: 'On Time' },
-        { id: 'PB8', name: 'Amritsar - Jalandhar', type: 'Regular', duration: '75 min', stops: 22, frequency: '25 min', fare: '₹65', isFavorite: false, status: 'Delayed 10 min' },
-        { id: 'PB15', name: 'Patiala - Bathinda', type: 'Regular', duration: '85 min', stops: 20, frequency: '35 min', fare: '₹70', isFavorite: true, status: 'On Time' },
-        { id: 'PB3', name: 'Mohali - Rupnagar', type: 'Express', duration: '60 min', stops: 12, frequency: '40 min', fare: '₹55', isFavorite: false, status: 'Running Early' }
+        { id: 'PB12', name: 'Chandigarh - Ludhiana', type: 'Express', duration: '90 min', stops: 15, frequency: '30 min', fare: '₹80', isFavorite: true, status: 'On Time', traffic: 'Moderate' },
+        { id: 'PB8', name: 'Amritsar - Jalandhar', type: 'Regular', duration: '75 min', stops: 22, frequency: '25 min', fare: '₹65', isFavorite: false, status: 'Delayed 10 min', traffic: 'Heavy' },
+        { id: 'PB15', name: 'Patiala - Bathinda', type: 'Regular', duration: '85 min', stops: 20, frequency: '35 min', fare: '₹70', isFavorite: true, status: 'On Time', traffic: 'Light' },
+        { id: 'PB3', name: 'Mohali - Rupnagar', type: 'Express', duration: '60 min', stops: 12, frequency: '40 min', fare: '₹55', isFavorite: false, status: 'Running Early', traffic: 'Moderate' }
       ],
       'Raipur': [
-        { id: 'RP1', name: 'Telibandha - Pandri', type: 'Regular', duration: '25 min', stops: 12, frequency: '12 min', fare: '₹15', isFavorite: true, status: 'On Time' },
-        { id: 'RP7', name: 'Shankar Nagar - Mowa', type: 'Regular', duration: '30 min', stops: 15, frequency: '15 min', fare: '₹18', isFavorite: false, status: 'Delayed 5 min' },
-        { id: 'RP3', name: 'Devendra Nagar - Durg', type: 'Express', duration: '45 min', stops: 8, frequency: '20 min', fare: '₹25', isFavorite: true, status: 'On Time' },
-        { id: 'RP5', name: 'Station Road - Tatibandh', type: 'Regular', duration: '35 min', stops: 18, frequency: '18 min', fare: '₹20', isFavorite: false, status: 'Running Early' }
+        { id: 'RP1', name: 'Telibandha - Pandri', type: 'Regular', duration: '25 min', stops: 12, frequency: '12 min', fare: '₹15', isFavorite: true, status: 'On Time', traffic: 'Light' },
+        { id: 'RP7', name: 'Shankar Nagar - Mowa', type: 'Regular', duration: '30 min', stops: 15, frequency: '15 min', fare: '₹18', isFavorite: false, status: 'Delayed 5 min', traffic: 'Moderate' },
+        { id: 'RP3', name: 'Devendra Nagar - Durg', type: 'Express', duration: '45 min', stops: 8, frequency: '20 min', fare: '₹25', isFavorite: true, status: 'On Time', traffic: 'Heavy' },
+        { id: 'RP5', name: 'Station Road - Tatibandh', type: 'Regular', duration: '35 min', stops: 18, frequency: '18 min', fare: '₹20', isFavorite: false, status: 'Running Early', traffic: 'Light' }
       ]
     }
     return cityRoutes[city] || cityRoutes['Bangalore']
@@ -192,6 +192,18 @@ export default function RoutesPage() {
                     <div className="font-semibold text-primary">
                       {route.fare}
                     </div>
+                  </div>
+
+                  {/* Traffic Information */}
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t">
+                    <div className="flex items-center space-x-2">
+                      <div className={`w-2 h-2 rounded-full ${
+                        route.traffic === 'Light' ? 'bg-success' : 
+                        route.traffic === 'Moderate' ? 'bg-warning' : 'bg-destructive'
+                      }`} />
+                      <span className="text-xs text-muted-foreground">Traffic: {route.traffic}</span>
+                    </div>
+                    <span className="text-xs font-medium">Live updates</span>
                   </div>
 
                   {/* Action Buttons */}
