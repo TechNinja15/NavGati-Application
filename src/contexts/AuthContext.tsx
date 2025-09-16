@@ -23,26 +23,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showRoleSelection, setShowRoleSelection] = useState(false)
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem('navgati_user')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
-      setIsAuthenticated(true)
-    }
-  }, [])
+  // Removed auto-login to always start with login/signup flow
 
   const login = (email: string, password: string): boolean => {
-    // Mock authentication - accept any credentials
+    // Mock authentication - accept any credentials for testing
     if (email && password) {
-      const savedUser = localStorage.getItem('navgati_user')
-      if (savedUser) {
-        const userData = JSON.parse(savedUser)
-        if (userData.email === email) {
-          setUser(userData)
-          setIsAuthenticated(true)
-          return true
-        }
-      }
+      // For mock purposes, create a default user profile
+      const userData = { email, name: email.split('@')[0], role: 'passenger' as 'passenger' | 'driver' }
+      localStorage.setItem('navgati_user', JSON.stringify(userData))
+      setUser(userData)
+      setIsAuthenticated(true)
+      setShowRoleSelection(true) // Always show role selection after login
+      return true
     }
     return false
   }
@@ -69,8 +61,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const setUserRole = (role: 'passenger' | 'driver') => {
+    // Handle role selection from both signup and login flows
     const tempUserData = localStorage.getItem('navgati_temp_user')
     if (tempUserData) {
+      // From signup flow
       const userData = JSON.parse(tempUserData)
       const finalUserData = { 
         email: userData.email, 
@@ -81,6 +75,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem('navgati_temp_user')
       setUser(finalUserData)
       setIsAuthenticated(true)
+      setShowRoleSelection(false)
+    } else if (user) {
+      // From login flow - update existing user with selected role
+      const updatedUser = { ...user, role }
+      localStorage.setItem('navgati_user', JSON.stringify(updatedUser))
+      setUser(updatedUser)
       setShowRoleSelection(false)
     }
   }
