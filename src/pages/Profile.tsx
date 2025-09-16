@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { User, Settings, Bell, HelpCircle, Shield, Moon, Sun, Globe, CreditCard, Star, LogOut } from 'lucide-react'
+import { User, Settings, Bell, HelpCircle, Shield, Moon, Sun, Globe, CreditCard, Star, LogOut, ArrowLeft, Bus, MapPin, Clock } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -24,12 +25,59 @@ export default function Profile() {
     email: user?.email || 'john.doe@email.com',
     phone: '+91 (555) 123-4567',
     memberSince: 'March 2024',
-    totalTrips: 156,
-    carbonSaved: '45.2 kg',
-    favoriteRoute: '42A - City Center Express'
+    totalTrips: user?.role === 'driver' ? 245 : 156,
+    carbonSaved: user?.role === 'driver' ? '128.5 kg' : '45.2 kg',
+    favoriteRoute: user?.role === 'driver' ? 'Route 1: Central - Airport' : '42A - City Center Express',
+    driverId: user?.role === 'driver' ? 'DRV-2024-8756' : null,
+    busNumber: user?.role === 'driver' ? 'KA-01-AB-1234' : null,
+    totalPassengers: user?.role === 'driver' ? 12450 : null,
+    rating: user?.role === 'driver' ? 4.8 : null
   }
 
-  const menuItems = [
+  const menuItems = user?.role === 'driver' ? [
+    {
+      icon: User,
+      title: 'Personal Information',
+      subtitle: 'Update your profile details',
+      action: 'navigate'
+    },
+    {
+      icon: Bus,
+      title: 'Bus Management',
+      subtitle: 'Manage your assigned bus details',
+      action: 'navigate'
+    },
+    {
+      icon: MapPin,
+      title: 'Route History',
+      subtitle: 'View your completed routes',
+      action: 'navigate'
+    },
+    {
+      icon: Clock,
+      title: 'Work Schedule',
+      subtitle: 'Manage your driving schedule',
+      action: 'navigate'
+    },
+    {
+      icon: Shield,
+      title: 'Driver Certification',
+      subtitle: 'License and safety records',
+      action: 'navigate'
+    },
+    {
+      icon: Globe,
+      title: 'Language',
+      subtitle: 'English',
+      action: 'navigate'
+    },
+    {
+      icon: HelpCircle,
+      title: 'Help & Support',
+      subtitle: 'Driver assistance and FAQs',
+      action: 'navigate'
+    }
+  ] : [
     {
       icon: User,
       title: 'Personal Information',
@@ -76,8 +124,25 @@ export default function Profile() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-gradient-card px-4 py-6 border-b">
-        <h1 className="text-2xl font-bold mb-2">Profile</h1>
-        <p className="text-muted-foreground">Manage your account and preferences</p>
+        <div className="flex items-center space-x-3">
+          {user?.role === 'driver' && (
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="p-2">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+          )}
+          <div>
+            <h1 className="text-2xl font-bold mb-2">
+              {user?.role === 'driver' ? 'Driver Profile' : 'Profile'}
+            </h1>
+            <p className="text-muted-foreground">
+              {user?.role === 'driver' 
+                ? 'Manage your driver account and preferences' 
+                : 'Manage your account and preferences'}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="px-4 py-6 space-y-6">
@@ -90,29 +155,51 @@ export default function Profile() {
                 {userData.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold">{userData.name}</h2>
-              <p className="text-muted-foreground text-sm">{userData.email}</p>
-              <p className="text-muted-foreground text-sm">Member since {userData.memberSince}</p>
-            </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold">{userData.name}</h2>
+            <p className="text-muted-foreground text-sm">{userData.email}</p>
+            {user?.role === 'driver' && userData.driverId && (
+              <p className="text-primary text-sm font-medium">Driver ID: {userData.driverId}</p>
+            )}
+            <p className="text-muted-foreground text-sm">Member since {userData.memberSince}</p>
+          </div>
           </div>
           
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-primary">{userData.totalTrips}</p>
-              <p className="text-xs text-muted-foreground">Total Trips</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-success">{userData.carbonSaved}</p>
-              <p className="text-xs text-muted-foreground">CO₂ Saved</p>
-            </div>
-            <div className="text-center">
-              <Badge variant="secondary" className="text-xs">
-                Eco Rider
-              </Badge>
-              <p className="text-xs text-muted-foreground mt-1">Status</p>
-            </div>
+            {user?.role === 'driver' ? (
+              <>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">{userData.totalTrips}</p>
+                  <p className="text-xs text-muted-foreground">Total Routes</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-success">{userData.totalPassengers}</p>
+                  <p className="text-xs text-muted-foreground">Passengers Served</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-warning">★ {userData.rating}</p>
+                  <p className="text-xs text-muted-foreground">Driver Rating</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">{userData.totalTrips}</p>
+                  <p className="text-xs text-muted-foreground">Total Trips</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-success">{userData.carbonSaved}</p>
+                  <p className="text-xs text-muted-foreground">CO₂ Saved</p>
+                </div>
+                <div className="text-center">
+                  <Badge variant="secondary" className="text-xs">
+                    Eco Rider
+                  </Badge>
+                  <p className="text-xs text-muted-foreground mt-1">Status</p>
+                </div>
+              </>
+            )}
           </div>
         </Card>
 

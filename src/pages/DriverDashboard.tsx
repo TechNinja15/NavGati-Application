@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast'
 
 export default function DriverDashboard() {
   const [busNumber, setBusNumber] = useState('')
+  const [selectedCity, setSelectedCity] = useState('')
   const [routeNumber, setRouteNumber] = useState('')
   const [totalSeats, setTotalSeats] = useState('')
   const [filledSeats, setFilledSeats] = useState(0)
@@ -30,7 +31,20 @@ export default function DriverDashboard() {
     { name: 'Terminal', eta: '32 min', status: 'upcoming' },
   ]
 
-  const routes = ['Route 1: Central - Airport', 'Route 2: Mall - University', 'Route 3: Tech Park - Terminal']
+  const cities = ['Bangalore', 'Punjab', 'Raipur', 'Mumbai', 'Delhi']
+  
+  const getRoutesForCity = (city: string) => {
+    const cityRoutes = {
+      'Bangalore': ['Route 1: Central - Airport', 'Route 2: Mall - University', 'Route 3: Tech Park - Terminal'],
+      'Punjab': ['Route 1: Ludhiana - Amritsar', 'Route 2: Chandigarh - Patiala', 'Route 3: Jalandhar - Pathankot'],
+      'Raipur': ['Route 1: Central - Steel Plant', 'Route 2: University - Airport', 'Route 3: Station - IT Park'],
+      'Mumbai': ['Route 1: CST - Bandra', 'Route 2: Andheri - Colaba', 'Route 3: Thane - Churchgate'],
+      'Delhi': ['Route 1: CP - Airport', 'Route 2: Red Fort - Noida', 'Route 3: India Gate - Gurgaon']
+    }
+    return cityRoutes[city] || []
+  }
+
+  const routes = selectedCity ? getRoutesForCity(selectedCity) : []
 
   useEffect(() => {
     if (showCamera) {
@@ -67,10 +81,10 @@ export default function DriverDashboard() {
   }
 
   const handleStartJourney = () => {
-    if (!busNumber || !routeNumber || !totalSeats) {
+    if (!busNumber || !selectedCity || !routeNumber || !totalSeats) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all bus details before starting journey.",
+        description: "Please fill in all bus details including city selection before starting journey.",
         variant: "destructive",
       })
       return
@@ -79,7 +93,7 @@ export default function DriverDashboard() {
     setJourneyStarted(true)
     toast({
       title: "Journey Started!",
-      description: `Bus ${busNumber} is now active on ${routeNumber}`,
+      description: `Bus ${busNumber} is now active on ${routeNumber} in ${selectedCity}`,
     })
   }
 
@@ -145,10 +159,31 @@ export default function DriverDashboard() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="route">Route</Label>
-                <Select value={routeNumber} onValueChange={setRouteNumber}>
+                <Label htmlFor="city">City</Label>
+                <Select value={selectedCity} onValueChange={(value) => {
+                  setSelectedCity(value)
+                  setRouteNumber('') // Reset route when city changes
+                }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select your route" />
+                    <SelectValue placeholder="Select your city" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((city, index) => (
+                      <SelectItem key={index} value={city}>{city}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="route">Route</Label>
+                <Select 
+                  value={routeNumber} 
+                  onValueChange={setRouteNumber}
+                  disabled={!selectedCity}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={selectedCity ? "Select your route" : "First select a city"} />
                   </SelectTrigger>
                   <SelectContent>
                     {routes.map((route, index) => (
@@ -156,6 +191,9 @@ export default function DriverDashboard() {
                     ))}
                   </SelectContent>
                 </Select>
+                {!selectedCity && (
+                  <p className="text-xs text-muted-foreground">Please select a city first to see available routes</p>
+                )}
               </div>
 
               <div className="space-y-2">
