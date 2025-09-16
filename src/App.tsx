@@ -8,11 +8,13 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { CityProvider } from '@/contexts/CityContext'
 import { BottomNavigation } from "@/components/BottomNavigation";
+import RoleSelection from "@/components/RoleSelection";
 import Home from "./pages/Home";
 import RoutesPage from "./pages/RoutesPage";
 import Tickets from "./pages/Tickets";
 import Wallet from "./pages/Wallet";
 import Profile from "./pages/Profile";
+import DriverDashboard from "./pages/DriverDashboard";
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import NotFound from "./pages/NotFound";
@@ -30,10 +32,26 @@ function AuthScreen() {
 }
 
 function AppContent() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, showRoleSelection, user } = useAuth()
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !showRoleSelection) {
     return <AuthScreen />
+  }
+
+  if (showRoleSelection) {
+    return <RoleSelection />
+  }
+
+  if (user?.role === 'driver') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Routes>
+          <Route path="/" element={<DriverDashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<DriverDashboard />} />
+        </Routes>
+      </div>
+    )
   }
 
   return (

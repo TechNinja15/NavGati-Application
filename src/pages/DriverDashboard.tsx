@@ -1,0 +1,337 @@
+import { useState, useRef, useEffect } from 'react'
+import { Bus, MapPin, Clock, Users, Camera, Map, Play, Square, ChevronRight } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useToast } from '@/hooks/use-toast'
+
+export default function DriverDashboard() {
+  const [busNumber, setBusNumber] = useState('')
+  const [routeNumber, setRouteNumber] = useState('')
+  const [totalSeats, setTotalSeats] = useState('')
+  const [filledSeats, setFilledSeats] = useState(0)
+  const [journeyStarted, setJourneyStarted] = useState(false)
+  const [currentStopIndex, setCurrentStopIndex] = useState(0)
+  const [showCamera, setShowCamera] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const { toast } = useToast()
+
+  // Mock bus stops data
+  const busStops = [
+    { name: 'Central Station', eta: 'Current Stop', status: 'current' },
+    { name: 'City Mall', eta: '5 min', status: 'upcoming' },
+    { name: 'Tech Park', eta: '12 min', status: 'upcoming' },
+    { name: 'University', eta: '18 min', status: 'upcoming' },
+    { name: 'Airport Road', eta: '25 min', status: 'upcoming' },
+    { name: 'Terminal', eta: '32 min', status: 'upcoming' },
+  ]
+
+  const routes = ['Route 1: Central - Airport', 'Route 2: Mall - University', 'Route 3: Tech Park - Terminal']
+
+  useEffect(() => {
+    if (showCamera) {
+      startCamera()
+    } else {
+      stopCamera()
+    }
+    return () => stopCamera()
+  }, [showCamera])
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      })
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+      }
+    } catch (error) {
+      toast({
+        title: "Camera Error",
+        description: "Unable to access camera. Please check permissions.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream
+      stream.getTracks().forEach(track => track.stop())
+      videoRef.current.srcObject = null
+    }
+  }
+
+  const handleStartJourney = () => {
+    if (!busNumber || !routeNumber || !totalSeats) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all bus details before starting journey.",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    setJourneyStarted(true)
+    toast({
+      title: "Journey Started!",
+      description: `Bus ${busNumber} is now active on ${routeNumber}`,
+    })
+  }
+
+  const handleStopJourney = () => {
+    setJourneyStarted(false)
+    setCurrentStopIndex(0)
+    toast({
+      title: "Journey Completed",
+      description: "Thank you for your service!",
+    })
+  }
+
+  const moveToNextStop = () => {
+    if (currentStopIndex < busStops.length - 1) {
+      setCurrentStopIndex(currentStopIndex + 1)
+      toast({
+        title: "Stop Updated",
+        description: `Now at ${busStops[currentStopIndex + 1].name}`,
+      })
+    }
+  }
+
+  const openGoogleMaps = () => {
+    const mapsUrl = `https://www.google.com/maps/search/bus+route+${routeNumber}`
+    window.open(mapsUrl, '_blank')
+  }
+
+  if (!journeyStarted) {
+    return (
+      <div className="min-h-screen bg-background p-4">
+        <div className="max-w-2xl mx-auto space-y-6">
+          {/* Header */}
+          <Card className="p-6 shadow-card bg-gradient-card">
+            <div className="flex items-center space-x-3">
+              <Bus className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-2xl font-bold text-primary">Driver Dashboard</h1>
+                <p className="text-muted-foreground">Set up your bus details</p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Bus Setup Form */}
+          <Card className="p-6 shadow-card">
+            <h2 className="text-lg font-semibold mb-4">Bus Details</h2>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="busNumber">Bus Number</Label>
+                <Input
+                  id="busNumber"
+                  placeholder="e.g., KA-01-AB-1234"
+                  value={busNumber}
+                  onChange={(e) => setBusNumber(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="route">Route</Label>
+                <Select value={routeNumber} onValueChange={setRouteNumber}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your route" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {routes.map((route, index) => (
+                      <SelectItem key={index} value={route}>{route}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="seats">Total Seats</Label>
+                <Input
+                  id="seats"
+                  type="number"
+                  placeholder="e.g., 45"
+                  value={totalSeats}
+                  onChange={(e) => setTotalSeats(e.target.value)}
+                />
+              </div>
+
+              <Button onClick={handleStartJourney} className="w-full" size="lg">
+                <Play className="w-4 h-4 mr-2" />
+                Start Journey
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-background p-4 space-y-6">
+      {/* Header */}
+      <Card className="p-4 shadow-card bg-gradient-card">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Bus className="h-6 w-6 text-primary" />
+            <div>
+              <h1 className="text-xl font-bold">Bus {busNumber}</h1>
+              <p className="text-sm text-muted-foreground">{routeNumber}</p>
+            </div>
+          </div>
+          <Button onClick={handleStopJourney} variant="destructive" size="sm">
+            <Square className="w-4 h-4 mr-2" />
+            End Journey
+          </Button>
+        </div>
+      </Card>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="p-4 shadow-card">
+          <div className="flex items-center space-x-3">
+            <Users className="h-6 w-6 text-primary" />
+            <div>
+              <p className="text-sm text-muted-foreground">Passengers</p>
+              <p className="text-lg font-semibold">{filledSeats}/{totalSeats}</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-4 shadow-card">
+          <div className="flex items-center space-x-3">
+            <MapPin className="h-6 w-6 text-primary" />
+            <div>
+              <p className="text-sm text-muted-foreground">Current Stop</p>
+              <p className="text-lg font-semibold">{busStops[currentStopIndex].name}</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Bus Stops Timeline */}
+      <Card className="p-6 shadow-card">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Route Progress</h2>
+          <Button onClick={openGoogleMaps} variant="outline" size="sm">
+            <Map className="w-4 h-4 mr-2" />
+            View Map
+          </Button>
+        </div>
+        
+        <div className="space-y-3">
+          {busStops.map((stop, index) => (
+            <div key={index} className={`flex items-center space-x-3 p-3 rounded-lg border ${
+              index === currentStopIndex 
+                ? 'bg-primary/10 border-primary' 
+                : index < currentStopIndex 
+                  ? 'bg-muted/50 border-muted' 
+                  : 'border-border'
+            }`}>
+              <div className={`w-4 h-4 rounded-full ${
+                index === currentStopIndex 
+                  ? 'bg-primary' 
+                  : index < currentStopIndex 
+                    ? 'bg-muted-foreground' 
+                    : 'bg-border'
+              }`} />
+              
+              <div className="flex-1">
+                <p className="font-medium">{stop.name}</p>
+                <div className="flex items-center space-x-2">
+                  <Clock className="w-3 h-3 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    {index < currentStopIndex ? 'Departed' : stop.eta}
+                  </p>
+                </div>
+              </div>
+              
+              {index === currentStopIndex && currentStopIndex < busStops.length - 1 && (
+                <Button onClick={moveToNextStop} size="sm">
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Camera and Controls */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="p-4 shadow-card">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold">Bus Camera</h3>
+            <Button 
+              onClick={() => setShowCamera(!showCamera)} 
+              variant={showCamera ? "destructive" : "default"}
+              size="sm"
+            >
+              <Camera className="w-4 h-4 mr-2" />
+              {showCamera ? 'Stop Camera' : 'Start Camera'}
+            </Button>
+          </div>
+          
+          {showCamera ? (
+            <video 
+              ref={videoRef} 
+              autoPlay 
+              playsInline 
+              className="w-full h-48 bg-muted rounded-lg object-cover"
+            />
+          ) : (
+            <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">Camera off</p>
+              </div>
+            </div>
+          )}
+        </Card>
+
+        <Card className="p-4 shadow-card">
+          <h3 className="font-semibold mb-4">Passenger Count</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span>Current Passengers:</span>
+              <div className="flex items-center space-x-2">
+                <Button 
+                  onClick={() => setFilledSeats(Math.max(0, filledSeats - 1))} 
+                  variant="outline" 
+                  size="sm"
+                  disabled={filledSeats === 0}
+                >
+                  -
+                </Button>
+                <Badge variant="secondary" className="px-3 py-1">
+                  {filledSeats}
+                </Badge>
+                <Button 
+                  onClick={() => setFilledSeats(Math.min(parseInt(totalSeats), filledSeats + 1))} 
+                  variant="outline" 
+                  size="sm"
+                  disabled={filledSeats >= parseInt(totalSeats)}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
+            
+            <div className="w-full bg-muted rounded-full h-2">
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-300" 
+                style={{ width: `${(filledSeats / parseInt(totalSeats)) * 100}%` }}
+              />
+            </div>
+            
+            <p className="text-sm text-muted-foreground text-center">
+              {((filledSeats / parseInt(totalSeats)) * 100).toFixed(0)}% occupied
+            </p>
+          </div>
+        </Card>
+      </div>
+    </div>
+  )
+}

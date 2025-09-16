@@ -34,7 +34,7 @@ export default function Login({ onSwitchToSignup }: LoginProps) {
     } else {
       toast({
         title: "Login failed",
-        description: "Invalid email or password. Please try again.",
+        description: "No account found with these credentials. Please sign up first.",
         variant: "destructive",
       })
     }

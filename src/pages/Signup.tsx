@@ -30,12 +30,12 @@ export default function Signup({ onSwitchToLogin }: SignupProps) {
     if (signup(name, email, password)) {
       toast({
         title: "Account created!",
-        description: "Welcome to NavGati. You can now track your buses.",
+        description: "Please select your role to continue.",
       })
     } else {
       toast({
         title: "Signup failed",
-        description: "Invalid credentials. Please check your details.",
+        description: "Please fill in all fields correctly.",
         variant: "destructive",
       })
     }
