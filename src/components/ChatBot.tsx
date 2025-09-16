@@ -73,16 +73,17 @@ export default function ChatBot() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-shadow bg-primary hover:bg-primary/90"
+        variant="outline"
         size="icon"
+        className="shrink-0"
       >
-        <MessageCircle className="h-6 w-6" />
+        <MessageCircle className="h-4 w-4" />
       </Button>
     )
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 w-80 h-96 shadow-xl flex flex-col">
+    <Card className="fixed bottom-6 right-6 w-80 h-96 shadow-xl flex flex-col z-50">
       {/* Header */}
       <div className="bg-primary text-primary-foreground p-4 rounded-t-lg flex items-center justify-between">
         <div>
