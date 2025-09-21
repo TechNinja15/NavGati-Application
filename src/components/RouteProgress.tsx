@@ -20,6 +20,34 @@ interface RouteProgressProps {
 }
 
 export default function RouteProgress({ routeId, routeName, onBack, onViewMap }: RouteProgressProps) {
+  const getSeatAvailability = (routeId: string): { available: number; total: number } => {
+    const seatData: { [key: string]: { available: number; total: number } } = {
+      // Bangalore Routes
+      '305D': { available: 12, total: 45 },
+      'KIA-15': { available: 8, total: 52 },
+      '500D': { available: 25, total: 48 },
+      
+      // Mumbai Routes
+      '51': { available: 18, total: 60 },
+      '496LTD': { available: 6, total: 35 },
+      
+      // Delhi Routes
+      '405': { available: 15, total: 55 },
+      'NCR': { available: 22, total: 50 },
+      
+      // Punjab Routes
+      'PB12': { available: 14, total: 42 },
+      'PB8': { available: 9, total: 38 },
+      
+      // Raipur Routes
+      'RP1': { available: 16, total: 40 },
+      'RP7': { available: 11, total: 32 },
+      'RP3': { available: 7, total: 45 }
+    }
+    
+    return seatData[routeId] || { available: 20, total: 45 }
+  }
+
   const getRouteStops = (routeId: string, routeName: string): RouteStop[] => {
     const routeStopsData: { [key: string]: RouteStop[] } = {
       // Bangalore Routes
@@ -139,6 +167,7 @@ export default function RouteProgress({ routeId, routeName, onBack, onViewMap }:
   }
   
   const [stops] = useState<RouteStop[]>(getRouteStops(routeId, routeName))
+  const seatInfo = getSeatAvailability(routeId)
 
   return (
     <div className="min-h-screen bg-background">
@@ -158,13 +187,23 @@ export default function RouteProgress({ routeId, routeName, onBack, onViewMap }:
       <div className="px-4 py-6">
         {/* Route Info */}
         <Card className="p-4 mb-6 shadow-card bg-gradient-card">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-              {routeId}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                {routeId}
+              </div>
+              <div>
+                <h2 className="font-semibold">{routeName}</h2>
+                <p className="text-sm text-muted-foreground">Live tracking active</p>
+              </div>
             </div>
-            <div>
-              <h2 className="font-semibold">{routeName}</h2>
-              <p className="text-sm text-muted-foreground">Live tracking active</p>
+            <div className="text-right">
+              <div className="flex items-center space-x-1">
+                <span className="text-lg font-bold text-primary">{seatInfo.available}</span>
+                <span className="text-muted-foreground">/</span>
+                <span className="text-sm text-muted-foreground">{seatInfo.total}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Available Seats</p>
             </div>
           </div>
         </Card>
