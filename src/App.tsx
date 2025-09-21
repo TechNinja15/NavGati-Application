@@ -10,12 +10,14 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { CityProvider } from '@/contexts/CityContext'
 import { BottomNavigation } from "@/components/BottomNavigation";
 import RoleSelection from "@/components/RoleSelection";
+import StudentOnboarding from "@/components/StudentOnboarding";
 import Home from "./pages/Home";
 import RoutesPage from "./pages/RoutesPage";
 import Tickets from "./pages/Tickets";
 import Wallet from "./pages/Wallet";
 import Profile from "./pages/Profile";
 import DriverDashboard from "./pages/DriverDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import BookTicket from "./pages/BookTicket";
@@ -34,14 +36,18 @@ function AuthScreen() {
 }
 
 function AppContent() {
-  const { isAuthenticated, showRoleSelection, user } = useAuth()
+  const { isAuthenticated, showRoleSelection, showStudentOnboarding, user } = useAuth()
 
-  if (!isAuthenticated && !showRoleSelection) {
+  if (!isAuthenticated && !showRoleSelection && !showStudentOnboarding) {
     return <AuthScreen />
   }
 
   if (showRoleSelection) {
     return <RoleSelection />
+  }
+
+  if (showStudentOnboarding) {
+    return <StudentOnboarding />
   }
 
   if (user?.role === 'driver') {
@@ -51,6 +57,18 @@ function AppContent() {
           <Route path="/" element={<DriverDashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<DriverDashboard />} />
+        </Routes>
+      </div>
+    )
+  }
+
+  if (user?.role === 'student') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Routes>
+          <Route path="/" element={<StudentDashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<StudentDashboard />} />
         </Routes>
       </div>
     )

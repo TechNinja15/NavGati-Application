@@ -1,4 +1,4 @@
-import { Users, Car } from 'lucide-react'
+import { Users, Car, GraduationCap } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
@@ -14,7 +14,7 @@ export default function RoleSelection() {
           <p className="text-muted-foreground">How would you like to use NavGati?</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="p-6 shadow-card hover:shadow-float transition-shadow cursor-pointer border-2 hover:border-primary/50"
                 onClick={() => setUserRole('passenger')}>
             <div className="text-center space-y-4">
@@ -47,6 +47,24 @@ export default function RoleSelection() {
               </div>
               <Button className="w-full" onClick={() => setUserRole('driver')}>
                 Select Driver
+              </Button>
+            </div>
+          </Card>
+
+          <Card className="p-6 shadow-card hover:shadow-float transition-shadow cursor-pointer border-2 hover:border-primary/50"
+                onClick={() => setUserRole('student')}>
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                <GraduationCap className="h-8 w-8 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">Student</h3>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Access college, university, and school bus services
+                </p>
+              </div>
+              <Button className="w-full" onClick={() => setUserRole('student')}>
+                Select Student
               </Button>
             </div>
           </Card>
