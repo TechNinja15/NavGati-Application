@@ -9,6 +9,7 @@ import { useCity } from '@/contexts/CityContext'
 import { useNavigate } from 'react-router-dom'
 import RouteProgress from '@/components/RouteProgress'
 import MapView from '@/components/MapView'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function RoutesPage() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -18,6 +19,7 @@ export default function RoutesPage() {
   const [selectedRoute, setSelectedRoute] = useState<any>(null)
   const { selectedCity } = useCity()
   const navigate = useNavigate()
+  const { t } = useLanguage()
 
   // Real route data based on selected city
   const getCityRoutes = (city: string) => {
@@ -60,8 +62,8 @@ export default function RoutesPage() {
 
   const filteredRoutes = routes.filter(route => {
     const matchesSearch = route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         route.id.toLowerCase().includes(searchQuery.toLowerCase())
-    
+      route.id.toLowerCase().includes(searchQuery.toLowerCase())
+
     if (activeTab === 'favorites') return matchesSearch && route.isFavorite
     if (activeTab === 'express') return matchesSearch && route.type === 'Express'
     return matchesSearch
@@ -122,8 +124,8 @@ export default function RoutesPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-gradient-card px-4 py-6 border-b">
-        <h1 className="text-2xl font-bold mb-2">Routes & Timetables</h1>
-        <p className="text-muted-foreground">Find and track your bus routes</p>
+        <h1 className="text-2xl font-bold mb-2">{t("routes.title")}</h1>
+        <p className="text-muted-foreground">{t("routes.subtitle")}</p>
       </div>
 
       <div className="px-4 py-6 space-y-6">
@@ -133,7 +135,7 @@ export default function RoutesPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               type="text"
-              placeholder="Search by route number or destination..."
+              placeholder={t("routes.search_placeholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-background border-0 shadow-none focus-visible:ring-1"
@@ -144,9 +146,9 @@ export default function RoutesPage() {
         {/* Route Filters */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="all">All Routes</TabsTrigger>
-            <TabsTrigger value="favorites">Favorites</TabsTrigger>
-            <TabsTrigger value="express">Express</TabsTrigger>
+            <TabsTrigger value="all">{t("routes.tab.all")}</TabsTrigger>
+            <TabsTrigger value="favorites">{t("routes.tab.favorites")}</TabsTrigger>
+            <TabsTrigger value="express">{t("routes.tab.express")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab} className="space-y-4 mt-6">
@@ -184,7 +186,7 @@ export default function RoutesPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">{route.stops} stops</span>
+                      <span className="text-muted-foreground">{route.stops} {t("stops_away")}</span>
                     </div>
                     <div className="text-muted-foreground">
                       Every {route.frequency}
@@ -197,24 +199,23 @@ export default function RoutesPage() {
                   {/* Traffic Information */}
                   <div className="flex items-center justify-between mt-2 pt-2 border-t">
                     <div className="flex items-center space-x-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        route.traffic === 'Light' ? 'bg-success' : 
-                        route.traffic === 'Moderate' ? 'bg-warning' : 'bg-destructive'
-                      }`} />
-                      <span className="text-xs text-muted-foreground">Traffic: {route.traffic}</span>
+                      <div className={`w-2 h-2 rounded-full ${route.traffic === 'Light' ? 'bg-success' :
+                          route.traffic === 'Moderate' ? 'bg-warning' : 'bg-destructive'
+                        }`} />
+                      <span className="text-xs text-muted-foreground">{t("routes.traffic")}: {route.traffic}</span>
                     </div>
-                    <span className="text-xs font-medium">Live updates</span>
+                    <span className="text-xs font-medium">{t("routes.live_updates")}</span>
                   </div>
 
                   {/* Action Buttons */}
                   <div className="flex space-x-2 pt-2">
                     <Button size="sm" className="flex-1" onClick={() => handleTrackLive(route)}>
                       <Navigation className="h-4 w-4 mr-2" />
-                      Track Live
+                      {t("routes.track_live")}
                     </Button>
                     <Button size="sm" variant="outline" className="flex-1" onClick={handleBookTicket}>
                       <Ticket className="h-4 w-4 mr-2" />
-                      Book Ticket
+                      {t("routes.book_ticket")}
                     </Button>
                   </div>
                 </div>
@@ -226,9 +227,9 @@ export default function RoutesPage() {
         {filteredRoutes.length === 0 && (
           <Card className="p-8 text-center shadow-card">
             <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="font-semibold mb-2">No routes found</h3>
+            <h3 className="font-semibold mb-2">{t("routes.no_routes")}</h3>
             <p className="text-muted-foreground text-sm">
-              Try adjusting your search or filter criteria
+              {t("routes.try_adjusting")}
             </p>
           </Card>
         )}

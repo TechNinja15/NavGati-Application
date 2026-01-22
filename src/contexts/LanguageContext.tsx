@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-
-type Language = 'en' | 'hi' | 'pa' | 'kn'
+import { translations, Language } from '@/lib/translations'
 
 type LanguageProviderProps = {
   children: React.ReactNode
@@ -11,11 +10,19 @@ type LanguageProviderProps = {
 type LanguageProviderState = {
   language: Language
   setLanguage: (language: Language) => void
+  t: (key: string) => string
+  hasSelectedLanguage: boolean
+  completeSelection: () => void
+  resetSelection: () => void
 }
 
 const initialState: LanguageProviderState = {
   language: 'en',
   setLanguage: () => null,
+  t: (key) => key,
+  hasSelectedLanguage: true,
+  completeSelection: () => null,
+  resetSelection: () => null,
 }
 
 const LanguageProviderContext = createContext<LanguageProviderState>(initialState)
@@ -26,19 +33,46 @@ export function LanguageProvider({
   storageKey = 'bus-app-language',
   ...props
 }: LanguageProviderProps) {
-  const [language, setLanguage] = useState<Language>(
-    () => (localStorage.getItem(storageKey) as Language) || defaultLanguage
-  )
+  // Check if user has explicitly selected a language before
+  const [hasSelectedLanguage, setHasSelectedLanguage] = useState<boolean>(() => {
+    return !!localStorage.getItem(storageKey + '-selected')
+  })
+
+  // Ensure default language is valid, default to 'en' if not
+  const [language, setLanguage] = useState<Language>(() => {
+    const storedLang = localStorage.getItem(storageKey) as Language
+    return (storedLang && translations[storedLang]) ? storedLang : defaultLanguage
+  })
 
   useEffect(() => {
     localStorage.setItem(storageKey, language)
+    document.documentElement.lang = language
   }, [language, storageKey])
+
+  const completeSelection = () => {
+    setHasSelectedLanguage(true)
+    localStorage.setItem(storageKey + '-selected', 'true')
+  }
+
+  const resetSelection = () => {
+    setHasSelectedLanguage(false)
+    localStorage.removeItem(storageKey + '-selected')
+    // We don't remove the language itself, just the "selected" flag so the prompt appears
+  }
+
+  const t = (key: string): string => {
+    // Nested object support not strictly needed with flat structure, but safe to keep basic lookup
+    // Currently we flat keys like "routes.title"
+    return translations[language][key as keyof typeof translations[typeof language]] || translations['en'][key as keyof typeof translations['en']] || key
+  }
 
   const value = {
     language,
-    setLanguage: (language: Language) => {
-      setLanguage(language)
-    },
+    setLanguage,
+    t,
+    hasSelectedLanguage,
+    completeSelection,
+    resetSelection
   }
 
   return (

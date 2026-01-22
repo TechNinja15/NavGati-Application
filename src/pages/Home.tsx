@@ -7,10 +7,12 @@ import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useCity } from '@/contexts/CityContext'
 import ChatBot from '@/components/ChatBot'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('')
   const { selectedCity, setSelectedCity, cities } = useCity()
+  const { t } = useLanguage()
 
   // Mock data for nearby buses and stops based on selected city
   const getCityData = (city: string) => {
@@ -87,14 +89,14 @@ export default function Home() {
       <div className="bg-gradient-card px-4 py-6 border-b">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-primary">NavGati</h1>
-            <p className="text-sm text-muted-foreground">Find your bus, track in real-time</p>
+            <h1 className="text-2xl font-bold text-primary">{t("app.name")}</h1>
+            <p className="text-sm text-muted-foreground">{t("app.tagline")}</p>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="text-sm">
                 <MapPin className="h-4 w-4 mr-2" />
-                {selectedCity}
+                {t(`city.${selectedCity}`)}
                 <ChevronDown className="h-4 w-4 ml-2" />
               </Button>
             </DropdownMenuTrigger>
@@ -105,7 +107,7 @@ export default function Home() {
                   onClick={() => setSelectedCity(city)}
                   className={selectedCity === city ? 'bg-primary/10' : ''}
                 >
-                  {city}
+                  {t(`city.${city}`)}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -121,7 +123,7 @@ export default function Home() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 type="text"
-                placeholder="Search routes, stops, or bus numbers..."
+                placeholder={t("search.placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-background border-0 shadow-none focus-visible:ring-1"
@@ -137,8 +139,8 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <Navigation className="h-6 w-6 text-primary" />
               <div>
-                <p className="font-medium text-sm">Live Tracking</p>
-                <p className="text-xs text-muted-foreground">Track buses</p>
+                <p className="font-medium text-sm">{t("quick.live_tracking")}</p>
+                <p className="text-xs text-muted-foreground">{t("quick.track_buses")}</p>
               </div>
             </div>
           </Card>
@@ -146,8 +148,8 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <Bell className="h-6 w-6 text-primary" />
               <div>
-                <p className="font-medium text-sm">Notifications</p>
-                <p className="text-xs text-muted-foreground">Bus alerts</p>
+                <p className="font-medium text-sm">{t("quick.notifications")}</p>
+                <p className="text-xs text-muted-foreground">{t("quick.bus_alerts")}</p>
               </div>
             </div>
           </Card>
@@ -155,7 +157,7 @@ export default function Home() {
 
         {/* Nearby Buses */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Nearby Buses</h2>
+          <h2 className="text-lg font-semibold mb-3">{t("nearby.buses")}</h2>
           <div className="space-y-3">
             {nearbyBuses.map((bus) => (
               <Card key={bus.id} className="p-4 shadow-card bg-gradient-card">
@@ -166,7 +168,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="font-medium text-sm">{bus.route}</p>
-                      <p className="text-xs text-muted-foreground">{bus.stops} stops away</p>
+                      <p className="text-xs text-muted-foreground">{bus.stops} {t("stops_away")}</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -183,7 +185,7 @@ export default function Home() {
 
         {/* Nearby Stops */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Nearby Stops</h2>
+          <h2 className="text-lg font-semibold mb-3">{t("nearby.stops")}</h2>
           <div className="space-y-3">
             {nearbyStops.map((stop, index) => (
               <Card key={index} className="p-4 shadow-card bg-gradient-card">
@@ -192,7 +194,7 @@ export default function Home() {
                     <MapPin className="h-5 w-5 text-bus-stop" />
                     <div>
                       <p className="font-medium text-sm">{stop.name}</p>
-                      <p className="text-xs text-muted-foreground">{stop.distance} away</p>
+                      <p className="text-xs text-muted-foreground">{stop.distance} {t("away")}</p>
                     </div>
                   </div>
                   <div className="flex space-x-1">
@@ -215,11 +217,11 @@ export default function Home() {
               <Bell className="h-4 w-4" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-sm">Emergency Contact</p>
-              <p className="text-xs text-muted-foreground">24/7 helpline: 1800-123-BUS</p>
+              <p className="font-medium text-sm">{t("emergency.title")}</p>
+              <p className="text-xs text-muted-foreground">{t("emergency.subtitle")}</p>
             </div>
             <Button size="sm" variant="outline">
-              Call
+              {t("emergency.call")}
             </Button>
           </div>
         </Card>

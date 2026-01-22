@@ -9,13 +9,12 @@ import { Badge } from '@/components/ui/badge'
 import { useTheme } from '@/components/ThemeProvider'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { getTranslation } from '@/lib/translations'
 import { LanguageSelector } from '@/components/LanguageSelector'
 
 export default function Profile() {
   const { theme, setTheme } = useTheme()
   const { user, logout } = useAuth()
-  const { language } = useLanguage()
+  const { language, t, resetSelection } = useLanguage()
   const [notifications, setNotifications] = useState({
     busArrivals: true,
     delays: true,
@@ -41,81 +40,81 @@ export default function Profile() {
   const menuItems = user?.role === 'driver' ? [
     {
       icon: User,
-      title: getTranslation(language, 'personalInfo'),
-      subtitle: getTranslation(language, 'updateProfile'),
+      title: t('personalInfo'),
+      subtitle: t('updateProfile'),
       action: 'navigate'
     },
     {
       icon: Bus,
-      title: getTranslation(language, 'busManagement'),
-      subtitle: getTranslation(language, 'manageBusDetails'),
+      title: t('busManagement'),
+      subtitle: t('manageBusDetails'),
       action: 'navigate'
     },
     {
       icon: MapPin,
-      title: getTranslation(language, 'routeHistory'),
-      subtitle: getTranslation(language, 'viewCompletedRoutes'),
+      title: t('routeHistory'),
+      subtitle: t('viewCompletedRoutes'),
       action: 'navigate'
     },
     {
       icon: Clock,
-      title: getTranslation(language, 'workSchedule'),
-      subtitle: getTranslation(language, 'manageDrivingSchedule'),
+      title: t('workSchedule'),
+      subtitle: t('manageDrivingSchedule'),
       action: 'navigate'
     },
     {
       icon: Shield,
-      title: getTranslation(language, 'driverCertification'),
-      subtitle: getTranslation(language, 'licenseSafety'),
+      title: t('driverCertification'),
+      subtitle: t('licenseSafety'),
       action: 'navigate'
     },
     {
       icon: Globe,
-      title: getTranslation(language, 'language'),
-      subtitle: getTranslation(language, language === 'en' ? 'english' : language === 'hi' ? 'hindi' : language === 'pa' ? 'punjabi' : 'kannada'),
+      title: t('language'),
+      subtitle: t(language === 'en' ? 'english' : language === 'hi' ? 'hindi' : 'chhattisgarhi'),
       action: 'language'
     },
     {
       icon: HelpCircle,
-      title: getTranslation(language, 'helpSupport'),
-      subtitle: getTranslation(language, 'driverAssistance'),
+      title: t('helpSupport'),
+      subtitle: t('driverAssistance'),
       action: 'navigate'
     }
   ] : [
     {
       icon: User,
-      title: getTranslation(language, 'personalInfo'),
-      subtitle: getTranslation(language, 'updateProfile'),
+      title: t('personalInfo'),
+      subtitle: t('updateProfile'),
       action: 'navigate'
     },
     {
       icon: CreditCard,
-      title: getTranslation(language, 'paymentMethods'),
-      subtitle: getTranslation(language, 'managePayment'),
+      title: t('paymentMethods'),
+      subtitle: t('managePayment'),
       action: 'navigate'
     },
     {
       icon: Star,
-      title: getTranslation(language, 'favoriteRoutes'),
-      subtitle: getTranslation(language, 'manageSavedRoutes'),
+      title: t('favoriteRoutes'),
+      subtitle: t('manageSavedRoutes'),
       action: 'navigate'
     },
     {
       icon: Shield,
-      title: getTranslation(language, 'privacySecurity'),
-      subtitle: getTranslation(language, 'accountSecurity'),
+      title: t('privacySecurity'),
+      subtitle: t('accountSecurity'),
       action: 'navigate'
     },
     {
       icon: Globe,
-      title: getTranslation(language, 'language'),
-      subtitle: getTranslation(language, language === 'en' ? 'english' : language === 'hi' ? 'hindi' : language === 'pa' ? 'punjabi' : 'kannada'),
+      title: t('language'),
+      subtitle: t(language === 'en' ? 'english' : language === 'hi' ? 'hindi' : 'chhattisgarhi'),
       action: 'language'
     },
     {
       icon: HelpCircle,
-      title: getTranslation(language, 'helpSupport'),
-      subtitle: getTranslation(language, 'faqContact'),
+      title: t('helpSupport'),
+      subtitle: t('faqContact'),
       action: 'navigate'
     }
   ]
@@ -138,12 +137,12 @@ export default function Profile() {
           )}
           <div>
             <h1 className="text-2xl font-bold mb-2">
-              {user?.role === 'driver' ? getTranslation(language, 'driverProfile') : getTranslation(language, 'profile')}
+              {user?.role === 'driver' ? t('driverProfile') : t('profile')}
             </h1>
             <p className="text-muted-foreground">
-              {user?.role === 'driver' 
-                ? getTranslation(language, 'manageDriverAccount')
-                : getTranslation(language, 'manageAccount')}
+              {user?.role === 'driver'
+                ? t('manageDriverAccount')
+                : t('manageAccount')}
             </p>
           </div>
         </div>
@@ -159,48 +158,48 @@ export default function Profile() {
                 {userData.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold">{userData.name}</h2>
-            <p className="text-muted-foreground text-sm">{userData.email}</p>
-            {user?.role === 'driver' && userData.driverId && (
-              <p className="text-primary text-sm font-medium">{getTranslation(language, 'driverId')}: {userData.driverId}</p>
-            )}
-            <p className="text-muted-foreground text-sm">{getTranslation(language, 'memberSince')} {userData.memberSince}</p>
+            <div className="flex-1">
+              <h2 className="text-xl font-bold">{userData.name}</h2>
+              <p className="text-muted-foreground text-sm">{userData.email}</p>
+              {user?.role === 'driver' && userData.driverId && (
+                <p className="text-primary text-sm font-medium">{t('driverId')}: {userData.driverId}</p>
+              )}
+              <p className="text-muted-foreground text-sm">{t('memberSince')} {userData.memberSince}</p>
+            </div>
           </div>
-          </div>
-          
+
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t">
             {user?.role === 'driver' ? (
               <>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">{userData.totalTrips}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'totalRoutes')}</p>
+                  <p className="text-xs text-muted-foreground">{t('totalRoutes')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-success">{userData.totalPassengers}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'passengersServed')}</p>
+                  <p className="text-xs text-muted-foreground">{t('passengersServed')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-warning">★ {userData.rating}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'driverRating')}</p>
+                  <p className="text-xs text-muted-foreground">{t('driverRating')}</p>
                 </div>
               </>
             ) : (
               <>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">{userData.totalTrips}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'totalTrips')}</p>
+                  <p className="text-xs text-muted-foreground">{t('totalTrips')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-success">{userData.carbonSaved}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'carbonSaved')}</p>
+                  <p className="text-xs text-muted-foreground">{t('carbonSaved')}</p>
                 </div>
                 <div className="text-center">
                   <Badge variant="secondary" className="text-xs">
-                    {getTranslation(language, 'ecoRider')}
+                    {t('ecoRider')}
                   </Badge>
-                  <p className="text-xs text-muted-foreground mt-1">{getTranslation(language, 'status')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('status')}</p>
                 </div>
               </>
             )}
@@ -217,8 +216,8 @@ export default function Profile() {
                 <Sun className="h-5 w-5 text-primary" />
               )}
               <div>
-                <p className="font-medium text-sm">{getTranslation(language, 'darkMode')}</p>
-                <p className="text-xs text-muted-foreground">{getTranslation(language, 'toggleTheme')}</p>
+                <p className="font-medium text-sm">{t('darkMode')}</p>
+                <p className="text-xs text-muted-foreground">{t('toggleTheme')}</p>
               </div>
             </div>
             <Switch
@@ -233,44 +232,44 @@ export default function Profile() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2 mb-3">
               <Bell className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold">{getTranslation(language, 'notifications')}</h3>
+              <h3 className="font-semibold">{t('notifications')}</h3>
             </div>
-            
+
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-sm">{getTranslation(language, 'busArrivals')}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'busArrivalsDesc')}</p>
+                  <p className="font-medium text-sm">{t('busArrivals')}</p>
+                  <p className="text-xs text-muted-foreground">{t('busArrivalsDesc')}</p>
                 </div>
                 <Switch
                   checked={notifications.busArrivals}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setNotifications(prev => ({ ...prev, busArrivals: checked }))
                   }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-sm">{getTranslation(language, 'delaysDisruptions')}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'serviceUpdates')}</p>
+                  <p className="font-medium text-sm">{t('delaysDisruptions')}</p>
+                  <p className="text-xs text-muted-foreground">{t('serviceUpdates')}</p>
                 </div>
                 <Switch
                   checked={notifications.delays}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setNotifications(prev => ({ ...prev, delays: checked }))
                   }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-sm">{getTranslation(language, 'offersPromotions')}</p>
-                  <p className="text-xs text-muted-foreground">{getTranslation(language, 'specialDeals')}</p>
+                  <p className="font-medium text-sm">{t('offersPromotions')}</p>
+                  <p className="text-xs text-muted-foreground">{t('specialDeals')}</p>
                 </div>
                 <Switch
                   checked={notifications.offers}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setNotifications(prev => ({ ...prev, offers: checked }))
                   }
                 />
@@ -284,8 +283,8 @@ export default function Profile() {
           {menuItems.map((item, index) => (
             <Card key={index} className="p-4 shadow-card bg-gradient-card hover:shadow-float transition-shadow cursor-pointer">
               {item.action === 'language' ? (
-                <LanguageSelector 
-                  asMenuItem={true} 
+                <LanguageSelector
+                  asMenuItem={true}
                   currentLanguageDisplay={item.subtitle}
                 />
               ) : (
@@ -311,22 +310,22 @@ export default function Profile() {
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <Star className="h-4 w-4 text-primary fill-primary" />
-              <p className="font-semibold text-sm">{getTranslation(language, 'mostUsedRoute')}</p>
+              <p className="font-semibold text-sm">{t('mostUsedRoute')}</p>
             </div>
             <p className="text-sm text-muted-foreground">{userData.favoriteRoute}</p>
-            <p className="text-xs text-muted-foreground">{getTranslation(language, 'usedThisMonth')}</p>
+            <p className="text-xs text-muted-foreground">{t('usedThisMonth')}</p>
           </div>
         </Card>
 
         {/* Logout Button */}
         <Card className="p-4 shadow-card bg-gradient-card border-destructive/20">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={logout}
           >
             <LogOut className="h-4 w-4 mr-2" />
-            {getTranslation(language, 'signOut')}
+            {t('signOut')}
           </Button>
         </Card>
       </div>

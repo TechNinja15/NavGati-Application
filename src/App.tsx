@@ -5,12 +5,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LanguageProvider, useLanguage } from "@/contexts/LanguageContext";
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { CityProvider } from '@/contexts/CityContext'
 import { BottomNavigation } from "@/components/BottomNavigation";
-import RoleSelection from "@/components/RoleSelection";
 import StudentOnboarding from "@/components/StudentOnboarding";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import Home from "./pages/Home";
 import RoutesPage from "./pages/RoutesPage";
 import Tickets from "./pages/Tickets";
@@ -19,32 +19,24 @@ import Profile from "./pages/Profile";
 import DriverDashboard from "./pages/DriverDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import Login from './pages/Login'
-import Signup from './pages/Signup'
 import BookTicket from "./pages/BookTicket";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-function AuthScreen() {
-  const [isLogin, setIsLogin] = useState(true)
-
-  return isLogin ? (
-    <Login onSwitchToSignup={() => setIsLogin(false)} />
-  ) : (
-    <Signup onSwitchToLogin={() => setIsLogin(true)} />
-  )
-}
-
 function AppContent() {
-  const { isAuthenticated, showRoleSelection, showStudentOnboarding, user } = useAuth()
+  const { isAuthenticated, showStudentOnboarding, user } = useAuth()
+  const { hasSelectedLanguage } = useLanguage()
 
-  if (!isAuthenticated && !showRoleSelection && !showStudentOnboarding) {
-    return <AuthScreen />
+  if (!hasSelectedLanguage) {
+    return <LanguageSelector />
   }
 
-  if (showRoleSelection) {
-    return <RoleSelection />
+  if (!isAuthenticated && !showStudentOnboarding) {
+    return <Login />
   }
+
+  // RoleSelection removed as per user request
 
   if (showStudentOnboarding) {
     return <StudentOnboarding />
@@ -77,15 +69,15 @@ function AppContent() {
   return (
     <CityProvider>
       <div className="min-h-screen bg-background pb-20">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/routes" element={<RoutesPage />} />
-        <Route path="/tickets" element={<Tickets />} />
-        <Route path="/wallet" element={<Wallet />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/book-ticket" element={<BookTicket />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/routes" element={<RoutesPage />} />
+          <Route path="/tickets" element={<Tickets />} />
+          <Route path="/wallet" element={<Wallet />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/book-ticket" element={<BookTicket />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
         <BottomNavigation />
       </div>
     </CityProvider>

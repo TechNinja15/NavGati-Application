@@ -43,12 +43,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (email: string, password: string): boolean => {
     // Mock authentication - accept any credentials for testing
     if (email && password) {
-      // For mock purposes, create a default user profile
-      const userData = { email, name: email.split('@')[0], role: 'passenger' as 'passenger' | 'driver' | 'student' }
+      // Form login is now exclusively for Drivers/Staff
+      const userData = { email, name: email.split('@')[0], role: 'driver' as const }
       localStorage.setItem('navgati_user', JSON.stringify(userData))
       setUser(userData)
       setIsAuthenticated(true)
-      setShowRoleSelection(true) // Always show role selection after login
+      setShowRoleSelection(false) // Direct to Driver Dashboard
       return true
     }
     return false
@@ -57,20 +57,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = (name: string, email: string, password: string, role?: 'passenger' | 'driver' | 'student'): boolean => {
     // Mock signup - accept any credentials
     if (email && password && name) {
-      if (role) {
-        const userData = { email, name, role }
-        localStorage.setItem('navgati_user', JSON.stringify(userData))
-        setUser(userData)
-        setIsAuthenticated(true)
-        setShowRoleSelection(false)
-        return true
-      } else {
-        // First signup without role - show role selection
-        const tempUserData = { email, name, password }
-        localStorage.setItem('navgati_temp_user', JSON.stringify(tempUserData))
-        setShowRoleSelection(true)
-        return true
-      }
+      // Default form signup is for Drivers now
+      const resolvedRole = role || 'driver'
+      const userData = { email, name, role: resolvedRole }
+      localStorage.setItem('navgati_user', JSON.stringify(userData))
+      setUser(userData)
+      setIsAuthenticated(true)
+      setShowRoleSelection(false)
+      return true
     }
     return false
   }
@@ -87,10 +81,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (tempUserData) {
       // From signup flow
       const userData = JSON.parse(tempUserData)
-      const finalUserData = { 
-        email: userData.email, 
-        name: userData.name, 
-        role 
+      const finalUserData = {
+        email: userData.email,
+        name: userData.name,
+        role
       }
       localStorage.setItem('navgati_user', JSON.stringify(finalUserData))
       localStorage.removeItem('navgati_temp_user')
@@ -114,26 +108,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }) => {
     const tempUserData = localStorage.getItem('navgati_temp_user')
     let finalUserData
-    
+
     if (tempUserData) {
       // From signup flow
       const userData = JSON.parse(tempUserData)
-      finalUserData = { 
-        email: userData.email, 
-        name: userData.name, 
+      finalUserData = {
+        email: userData.email,
+        name: userData.name,
         role: 'student' as const,
         studentData
       }
       localStorage.removeItem('navgati_temp_user')
     } else if (user) {
-      // From login flow
-      finalUserData = { 
-        ...user, 
+      // From login flow or already partially authenticated
+      finalUserData = {
+        ...user,
+        role: 'student' as const,
+        studentData
+      }
+    } else {
+      // Direct access Student Portal (e.g. from Login screen button)
+      // We create a generic student user
+      finalUserData = {
+        email: `student_${Date.now()}@university.edu`,
+        name: 'Student User',
         role: 'student' as const,
         studentData
       }
     }
-    
+
     if (finalUserData) {
       localStorage.setItem('navgati_user', JSON.stringify(finalUserData))
       setUser(finalUserData as User)
@@ -157,13 +160,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      login, 
-      signup, 
-      logout, 
-      isAuthenticated, 
-      showRoleSelection, 
+    <AuthContext.Provider value={{
+      user,
+      login,
+      signup,
+      logout,
+      isAuthenticated,
+      showRoleSelection,
       showStudentOnboarding,
       setUserRole,
       completeStudentOnboarding,

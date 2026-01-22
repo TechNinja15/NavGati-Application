@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Wallet() {
   const [showRecharge, setShowRecharge] = useState(false)
   const [rechargeAmount, setRechargeAmount] = useState('')
+  const { t } = useLanguage()
 
   // Mock wallet data
   const walletData = {
@@ -81,8 +83,8 @@ export default function Wallet() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-gradient-card px-4 py-6 border-b">
-        <h1 className="text-2xl font-bold mb-2">My Wallet</h1>
-        <p className="text-muted-foreground">Manage your balance and payments</p>
+        <h1 className="text-2xl font-bold mb-2">{t("wallet.title")}</h1>
+        <p className="text-muted-foreground">{t("wallet.subtitle")}</p>
       </div>
 
       <div className="px-4 py-6 space-y-6">
@@ -92,28 +94,28 @@ export default function Wallet() {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <WalletIcon className="h-6 w-6" />
-                <span className="font-medium">Balance</span>
+                <span className="font-medium">{t("wallet.balance")}</span>
               </div>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="secondary"
                 onClick={() => setShowRecharge(!showRecharge)}
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Recharge
+                {t("wallet.recharge")}
               </Button>
             </div>
             <div>
               <h2 className="text-3xl font-bold">₹{walletData.balance.toFixed(2)}</h2>
-              <p className="text-sm opacity-90">Available Balance</p>
+              <p className="text-sm opacity-90">{t("wallet.available_balance")}</p>
             </div>
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div>
-                <p className="text-sm opacity-75">Pending Refund</p>
+                <p className="text-sm opacity-75">{t("wallet.pending_refund")}</p>
                 <p className="font-semibold">₹{walletData.pendingRefund.toFixed(2)}</p>
               </div>
               <div>
-                <p className="text-sm opacity-75">Total Saved</p>
+                <p className="text-sm opacity-75">{t("wallet.total_saved")}</p>
                 <p className="font-semibold">₹{walletData.totalSaved.toFixed(2)}</p>
               </div>
             </div>
@@ -123,10 +125,10 @@ export default function Wallet() {
         {/* Recharge Section */}
         {showRecharge && (
           <Card className="p-4 shadow-card bg-gradient-card">
-            <h3 className="font-semibold mb-4">Recharge Wallet</h3>
+            <h3 className="font-semibold mb-4">{t("wallet.recharge_wallet")}</h3>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="amount">Enter Amount</Label>
+                <Label htmlFor="amount">{t("wallet.enter_amount")}</Label>
                 <Input
                   id="amount"
                   type="number"
@@ -137,7 +139,7 @@ export default function Wallet() {
                 />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-2">Quick Amounts</p>
+                <p className="text-sm text-muted-foreground mb-2">{t("wallet.quick_amounts")}</p>
                 <div className="grid grid-cols-4 gap-2">
                   {quickAmounts.map((amount) => (
                     <Button
@@ -155,14 +157,14 @@ export default function Wallet() {
               <div className="flex space-x-2">
                 <Button className="flex-1">
                   <CreditCard className="h-4 w-4 mr-2" />
-                  Pay Now
+                  {t("wallet.pay_now")}
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setShowRecharge(false)}
                   className="flex-1"
                 >
-                  Cancel
+                  {t("cancel")}
                 </Button>
               </div>
             </div>
@@ -171,7 +173,7 @@ export default function Wallet() {
 
         {/* Special Offers */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Special Offers</h2>
+          <h2 className="text-lg font-semibold mb-3">{t("wallet.special_offers")}</h2>
           <div className="space-y-3">
             {offers.map((offer, index) => (
               <Card key={index} className="p-4 shadow-card bg-gradient-card border-l-4 border-l-primary">
@@ -195,17 +197,17 @@ export default function Wallet() {
         {/* Recent Transactions */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Recent Transactions</h2>
+            <h2 className="text-lg font-semibold">{t("wallet.recent_transactions")}</h2>
             <Button variant="ghost" size="sm">
               <History className="h-4 w-4 mr-2" />
-              View All
+              {t("wallet.view_all")}
             </Button>
           </div>
           <div className="space-y-3">
             {recentTransactions.map((transaction) => {
               const Icon = getTransactionIcon(transaction.type)
               const colorClass = getTransactionColor(transaction.type)
-              
+
               return (
                 <Card key={transaction.id} className="p-4 shadow-card bg-gradient-card">
                   <div className="flex items-center justify-between">
@@ -222,7 +224,7 @@ export default function Wallet() {
                       <p className={`font-semibold text-sm ${colorClass}`}>
                         {transaction.type === 'credit' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
                       </p>
-                      <Badge 
+                      <Badge
                         variant={transaction.status === 'completed' ? 'secondary' : 'destructive'}
                         className="text-xs"
                       >
@@ -241,13 +243,13 @@ export default function Wallet() {
           <Card className="p-4 shadow-card hover:shadow-float transition-shadow cursor-pointer bg-gradient-card">
             <div className="text-center space-y-2">
               <CreditCard className="h-6 w-6 text-primary mx-auto" />
-              <p className="font-medium text-sm">Add Payment Method</p>
+              <p className="font-medium text-sm">{t("wallet.add_payment_method")}</p>
             </div>
           </Card>
           <Card className="p-4 shadow-card hover:shadow-float transition-shadow cursor-pointer bg-gradient-card">
             <div className="text-center space-y-2">
               <History className="h-6 w-6 text-primary mx-auto" />
-              <p className="font-medium text-sm">Transaction History</p>
+              <p className="font-medium text-sm">{t("wallet.transaction_history")}</p>
             </div>
           </Card>
         </div>

@@ -8,7 +8,7 @@ import { GraduationCap, ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function StudentOnboarding() {
-  const { completeStudentOnboarding, goBackToRoleSelection } = useAuth()
+  const { completeStudentOnboarding, goBackToLogin } = useAuth()
   const [formData, setFormData] = useState({
     state: '',
     city: '',
@@ -17,7 +17,7 @@ export default function StudentOnboarding() {
   })
 
   const states = [
-    'Karnataka', 'Maharashtra', 'Delhi', 'Punjab', 'Chhattisgarh', 
+    'Karnataka', 'Maharashtra', 'Delhi', 'Punjab', 'Chhattisgarh',
     'Tamil Nadu', 'Gujarat', 'Rajasthan', 'Uttar Pradesh', 'West Bengal'
   ]
 
@@ -68,7 +68,7 @@ export default function StudentOnboarding() {
   }
 
   const handleBack = () => {
-    goBackToRoleSelection()
+    goBackToLogin()
   }
 
   return (
@@ -106,8 +106,8 @@ export default function StudentOnboarding() {
 
           <div className="space-y-2">
             <Label htmlFor="city">City *</Label>
-            <Select 
-              value={formData.city} 
+            <Select
+              value={formData.city}
               onValueChange={(value) => setFormData(prev => ({ ...prev, city: value, institution: '' }))}
               disabled={!formData.state}
             >
@@ -124,8 +124,8 @@ export default function StudentOnboarding() {
 
           <div className="space-y-2">
             <Label htmlFor="institution">University/College/School *</Label>
-            <Select 
-              value={formData.institution} 
+            <Select
+              value={formData.institution}
               onValueChange={(value) => setFormData(prev => ({ ...prev, institution: value }))}
               disabled={!formData.city}
             >
@@ -155,9 +155,9 @@ export default function StudentOnboarding() {
             </p>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full" 
+          <Button
+            type="submit"
+            className="w-full"
             disabled={!formData.state || !formData.city || !formData.institution || !formData.studentBusId}
           >
             Complete Registration

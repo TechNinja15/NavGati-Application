@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, EyeOff, Bus } from 'lucide-react'
+import { Eye, EyeOff, Bus, User, GraduationCap } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -7,16 +7,12 @@ import { Label } from '@/components/ui/label'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/hooks/use-toast'
 
-interface LoginProps {
-  onSwitchToSignup: () => void
-}
-
-export default function Login({ onSwitchToSignup }: LoginProps) {
+export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
+  const { login, signup, setUserRole } = useAuth()
   const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,17 +25,36 @@ export default function Login({ onSwitchToSignup }: LoginProps) {
     if (login(email, password)) {
       toast({
         title: "Welcome back!",
-        description: "You have successfully logged in.",
+        description: "Logged in as Driver.",
       })
     } else {
       toast({
         title: "Login failed",
-        description: "No account found with these credentials. Please sign up first.",
+        description: "Invalid credentials.",
         variant: "destructive",
       })
     }
 
     setIsLoading(false)
+  }
+
+  const handlePassengerAccess = () => {
+    // Create a guest session
+    const guestId = Math.random().toString(36).substring(7);
+    signup(`Guest ${guestId}`, `guest_${guestId}@navgati.com`, 'guest123', 'passenger');
+    toast({
+      title: "Welcome!",
+      description: "Continuing as Passenger.",
+    })
+  }
+
+  const handleStudentAccess = () => {
+    // Trigger student flow
+    setUserRole('student');
+    toast({
+      title: "Student Portal",
+      description: "Please complete onboarding.",
+    })
   }
 
   return (
@@ -50,8 +65,8 @@ export default function Login({ onSwitchToSignup }: LoginProps) {
             <Bus className="h-8 w-8 text-primary mr-2" />
             <h1 className="text-2xl font-bold text-primary">NavGati</h1>
           </div>
-          <h2 className="text-xl font-semibold mb-2">Welcome Back</h2>
-          <p className="text-muted-foreground text-sm">Sign in to your account</p>
+          <h2 className="text-xl font-semibold mb-2">Driver Login</h2>
+          <p className="text-muted-foreground text-sm">Sign in to your driver account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,20 +110,38 @@ export default function Login({ onSwitchToSignup }: LoginProps) {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? 'Signing in...' : 'Sign In as Driver'}
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{' '}
-            <button
-              onClick={onSwitchToSignup}
-              className="text-primary hover:underline font-medium"
-            >
-              Sign up
-            </button>
-          </p>
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue as
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <Button
+            variant="outline"
+            className="w-full border-primary/20 hover:bg-primary/5 h-12"
+            onClick={handlePassengerAccess}
+          >
+            <User className="h-4 w-4 mr-2" />
+            Continue as Passenger
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full border-primary/20 hover:bg-primary/5 h-12"
+            onClick={handleStudentAccess}
+          >
+            <GraduationCap className="h-4 w-4 mr-2" />
+            Student Portal
+          </Button>
         </div>
       </Card>
     </div>
