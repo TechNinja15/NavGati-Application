@@ -20,6 +20,7 @@ import DriverDashboard from "./pages/DriverDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import Login from './pages/Login'
 import BookTicket from "./pages/BookTicket";
+import LiveTrackingPage from "./pages/LiveTrackingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -76,6 +77,7 @@ function AppContent() {
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/book-ticket" element={<BookTicket />} />
+          <Route path="/tracking/:busId" element={<LiveTrackingPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <BottomNavigation />
