@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/hooks/use-toast'
 
 export default function Login() {
-  const [email, setEmail] = useState('')
+  const [driverId, setDriverId] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -19,23 +19,30 @@ export default function Login() {
     e.preventDefault()
     setIsLoading(true)
 
-    // Mock delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      const success = await login(driverId, password)
 
-    if (login(email, password)) {
+      if (success) {
+        toast({
+          title: "Welcome back!",
+          description: "Logged in as Driver.",
+        })
+      } else {
+        toast({
+          title: "Login failed",
+          description: "Invalid credentials. Please checking your Driver ID and Password.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
       toast({
-        title: "Welcome back!",
-        description: "Logged in as Driver.",
-      })
-    } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid credentials.",
+        title: "Login error",
+        description: "An unexpected error occurred.",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   const handlePassengerAccess = () => {
@@ -66,18 +73,18 @@ export default function Login() {
             <h1 className="text-2xl font-bold text-primary">NavGati</h1>
           </div>
           <h2 className="text-xl font-semibold mb-2">Driver Login</h2>
-          <p className="text-muted-foreground text-sm">Sign in to your driver account</p>
+          <p className="text-muted-foreground text-sm">Sign in with your Driver ID</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="driverId">Driver ID</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="driverId"
+              type="text"
+              placeholder="Enter your Driver ID"
+              value={driverId}
+              onChange={(e) => setDriverId(e.target.value)}
               required
             />
           </div>
