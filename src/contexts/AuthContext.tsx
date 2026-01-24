@@ -1,9 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
 
 interface User {
   email: string
   name: string
   role: 'passenger' | 'driver' | 'student'
+  driverDetails?: {
+    startStop: string
+    endStop: string
+    middleStops: string[]
+    busRouteData: any
+  }
   studentData?: {
     state: string
     city: string
@@ -14,7 +21,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null
-  login: (email: string, password: string) => boolean
+  login: (driverId: string, password: string) => Promise<boolean>
   signup: (name: string, email: string, password: string, role?: 'passenger' | 'driver' | 'student') => boolean
   logout: () => void
   isAuthenticated: boolean
@@ -38,27 +45,67 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [showRoleSelection, setShowRoleSelection] = useState(false)
   const [showStudentOnboarding, setShowStudentOnboarding] = useState(false)
 
-  // Removed auto-login to always start with login/signup flow
+  // Restore session from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem('navgati_user')
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser)
+        setUser(parsedUser)
+        setIsAuthenticated(true)
+      } catch (error) {
+        console.error('Failed to parse user session:', error)
+        localStorage.removeItem('navgati_user')
+      }
+    }
+  }, [])
 
-  const login = (email: string, password: string): boolean => {
-    // Mock authentication - accept any credentials for testing
-    if (email && password) {
-      // Form login is now exclusively for Drivers/Staff
-      const userData = { email, name: email.split('@')[0], role: 'driver' as const }
+  const login = async (driverId: string, password: string): Promise<boolean> => {
+    try {
+      // Query the registered_buses table (which acts as the drivers table)
+      const { data, error } = await supabase
+        .from('registered_buses')
+        .select('*')
+        .eq('user_id', driverId)
+        .eq('password', password)
+        .single()
+
+      if (error || !data) {
+        console.error('Login failed:', error)
+        return false
+      }
+
+      // Login successful
+      const userData: User = {
+        email: data.user_id, // Using user_id (e.g. DRV-...) as email/identifier
+        name: `Driver ${data.user_id}`,
+        role: 'driver',
+        driverDetails: {
+          startStop: data.start_stop,
+          endStop: data.end_stop,
+          middleStops: data.middle_stops || [],
+          busRouteData: data.bus_route_data
+        }
+      }
+
       localStorage.setItem('navgati_user', JSON.stringify(userData))
       setUser(userData)
       setIsAuthenticated(true)
-      setShowRoleSelection(false) // Direct to Driver Dashboard
+      setShowRoleSelection(false)
       return true
+    } catch (err) {
+      console.error('Unexpected login error:', err)
+      return false
     }
-    return false
   }
 
   const signup = (name: string, email: string, password: string, role?: 'passenger' | 'driver' | 'student'): boolean => {
-    // Mock signup - accept any credentials
-    if (email && password && name) {
-      // Default form signup is for Drivers now
-      const resolvedRole = role || 'driver'
+    // Signup remains a mock/local function for Passengers/Students for now
+    // logic as requested: "driver enter that id and pass... enter the app"
+
+    // For Passengers/Students or Guest access
+    if (email && name) {
+      const resolvedRole = role || 'passenger'
       const userData = { email, name, role: resolvedRole }
       localStorage.setItem('navgati_user', JSON.stringify(userData))
       setUser(userData)
