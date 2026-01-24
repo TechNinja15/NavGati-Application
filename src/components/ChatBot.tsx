@@ -27,17 +27,17 @@ export default function ChatBot() {
 
   const sendMessage = () => {
     if (!inputText.trim()) return
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputText,
       sender: 'user',
       timestamp: new Date()
     }
-    
+
     setMessages(prev => [...prev, userMessage])
     setInputText('')
-    
+
     // Simulate bot response
     setTimeout(() => {
       const botMessage: Message = {
@@ -109,11 +109,10 @@ export default function ChatBot() {
               className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-xs p-3 rounded-lg text-sm ${
-                  message.sender === 'user'
+                className={`max-w-xs p-3 rounded-lg text-sm ${message.sender === 'user'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted'
-                }`}
+                  }`}
               >
                 {message.text}
               </div>
