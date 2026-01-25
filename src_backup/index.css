@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Bus Transport App Design System - Navgati Color Scheme */
+
+@layer base {
+  :root {
+    /* Deep Navy & Vibrant Teal Palette */
+    
+    /* Backgrounds: Deep Navy */
+    --background: 222 47% 11%;        /* Main dark background */
+    --foreground: 210 40% 98%;        /* High contrast text */
+
+    /* Cards/Surfaces: Slightly lighter navy */
+    --card: 222 47% 13%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 13%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary: Off-White for High Contrast Elements */
+    --primary: 210 40% 98%;
+    --primary-foreground: 222 47% 11%;
+
+    /* Secondary: Vibrant Teal - Brand Identity */
+    --secondary: 160 84% 39%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Accent: Purple/Indigo - Visibility */
+    --accent: 250 80% 65%;
+    --accent-foreground: 210 40% 98%;
+
+    --muted: 222 30% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 30% 20%;
+    --input: 222 30% 20%;
+    --ring: 160 84% 39%; /* Teal ring */
+
+    --radius: 1rem;
+
+    /* Bus app specific tokens */
+    --bus-route: 142 69% 58%;         /* Green for routes */
+    --bus-stop: 24 100% 50%;          /* Orange for stops */
+    --bus-live: 4 90% 58%;            /* Red for live tracking */
+    --success: 142 69% 58%;
+    --warning: 38 92% 50%;
+    
+    /* Gradients */
+    /* Primary Gradient: Deep Navy -> Darker Navy */
+    --gradient-primary: linear-gradient(180deg, hsl(222, 47%, 11%), hsl(222, 47%, 8%));
+    
+    /* Hero Gradient: Deep Navy -> Purple/Indigo */
+    --gradient-hero: linear-gradient(135deg, hsl(222, 47%, 11%), hsl(250, 80%, 60%));
+    
+    /* Card Gradient: Subtle surface gradient */
+    --gradient-card: linear-gradient(145deg, hsl(222, 47%, 14%), hsl(222, 47%, 12%));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 20px -2px hsl(0, 0%, 0%, 0.5);
+    --shadow-float: 0 10px 30px -5px hsl(0, 0%, 0%, 0.7);
+  }
+
+  .dark {
+    /* Inherit from root as root is now the dark theme */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
