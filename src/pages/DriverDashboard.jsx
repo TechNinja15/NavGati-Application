@@ -43,14 +43,7 @@ export default function DriverDashboard() {
   const totalSeats = maxSeats.toString();
   const cities = ['Bangalore', 'Punjab', 'Raipur', 'Mumbai', 'Delhi'];
   const getRoutesForCity = (city) => {
-    const cityRoutes = {
-      'Bangalore': ['Route 1: Central - Airport', 'Route 2: Mall - University', 'Route 3: Tech Park - Terminal'],
-      'Punjab': ['Route 1: Ludhiana - Amritsar', 'Route 2: Chandigarh - Patiala', 'Route 3: Jalandhar - Pathankot'],
-      'Raipur': ['Route 1: Central - Steel Plant', 'Route 2: University - Airport', 'Route 3: Station - IT Park'],
-      'Mumbai': ['Route 1: CST - Bandra', 'Route 2: Andheri - Colaba', 'Route 3: Thane - Churchgate'],
-      'Delhi': ['Route 1: CP - Airport', 'Route 2: Red Fort - Noida', 'Route 3: India Gate - Gurgaon']
-    };
-    return cityRoutes[city] || [];
+    return [];
   };
   const routes = selectedCity ? getRoutesForCity(selectedCity) : [];
   // Derived Route Number
