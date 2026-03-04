@@ -12,7 +12,7 @@ import MapView from '@/components/MapView';
 import { useLanguage } from '@/contexts/LanguageContext';
 export default function RoutesPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('previous');
   const [showRouteProgress, setShowRouteProgress] = useState(false);
   const [showMapView, setShowMapView] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
@@ -27,9 +27,9 @@ export default function RoutesPage() {
   const filteredRoutes = routes.filter(route => {
     const matchesSearch = route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       route.id.toLowerCase().includes(searchQuery.toLowerCase());
-    if (activeTab === 'favorites')
+    if (activeTab === 'live')
       return matchesSearch && route.isFavorite;
-    if (activeTab === 'express')
+    if (activeTab === 'upcoming')
       return matchesSearch && route.type === 'Express';
     return matchesSearch;
   });
@@ -81,9 +81,9 @@ export default function RoutesPage() {
       {/* Route Filters */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="all">{t("routes.tab.all")}</TabsTrigger>
-          <TabsTrigger value="favorites">{t("routes.tab.favorites")}</TabsTrigger>
-          <TabsTrigger value="express">{t("routes.tab.express")}</TabsTrigger>
+          <TabsTrigger value="previous">{t("routes.tab.all")}</TabsTrigger>
+          <TabsTrigger value="live">{t("routes.tab.favorites")}</TabsTrigger>
+          <TabsTrigger value="upcoming">{t("routes.tab.express")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="space-y-4 mt-6">
